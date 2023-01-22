@@ -1,0 +1,17 @@
+{
+    "name": "forceedge01/bdd-analyser",
+    "description": "Analyse bdd scripts and find issues with detailed information and how to address these issues to prolong the longevitiy of your behaviour suite",
+    "type": "composer-plugin",
+    "license": "GPL",
+    "autoload": {
+        "psr-4": {
+            "Forceedge01\\BddAnalyser\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Abdul Wahhab Qureshi"
+        }
+    ],
+    "require": {}
+}
