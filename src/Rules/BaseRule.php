@@ -59,10 +59,10 @@ abstract class BaseRule implements RuleInterface {
 	}
 
 	public function getOutcomeObject(
-		string $step,
 		int $lineNumber,
 		string $message,
-		string $severity
+		string $severity,
+		string $step = null
 	): Outcome {
 		return new Outcome(
 			static::class,

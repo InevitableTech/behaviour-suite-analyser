@@ -36,3 +36,15 @@ Feature: testing
         And I fill in the credentials
         And I submit the details
         Then I should whatever
+        Given I am on the login page
+        And I fill in the credentials
+        And I submit the details
+        Then I should whatever
+        Given I am on the login page
+        And I fill in the credentials
+        And I submit the details
+        Then I should whatever
+        Given I am on the login page
+        And I fill in the credentials
+        And I submit the details
+        Then I should whatever

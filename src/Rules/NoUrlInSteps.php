@@ -13,10 +13,10 @@ class NoUrlInSteps extends BaseRule {
 
         if (count($match) > 0) {
             $collection->addOutcome($this->getOutcomeObject(
-                $step->getStepDefinition(),
                 $step->lineNumber,
                 $message = 'Hardcoded url found, should be abstracted.',
-                Entities\Outcome::HIGH
+                Entities\Outcome::HIGH,
+                $step->getStepDefinition()
             ));
         }
     }
