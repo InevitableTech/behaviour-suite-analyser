@@ -5,7 +5,7 @@
     "license": "GPL",
     "autoload": {
         "psr-4": {
-            "Forceedge01\\BddAnalyser\\": "src/"
+            "Forceedge01\\BDDStaticAnalyser\\": "src/"
         }
     },
     "authors": [

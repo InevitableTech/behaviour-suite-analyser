@@ -1,35 +1,70 @@
 <?php
 
-abstract class BaseRule {
-	public function beforeApply($file) {
+namespace Forceedge01\BDDStaticAnalyser\Rules;
+
+use Forceedge01\BDDStaticAnalyser\Entities\OutcomeCollection;
+use Forceedge01\BDDStaticAnalyser\Entities\Outcome;
+use Forceedge01\BDDStaticAnalyser\Entities\Background;
+use Forceedge01\BDDStaticAnalyser\Entities\Scenario;
+use Forceedge01\BDDStaticAnalyser\Entities\Step;
+use Forceedge01\BDDStaticAnalyser\Entities\FeatureFileContents;
+
+abstract class BaseRule implements RuleInterface {
+	public function setFeatureFileContents(FeatureFileContents $contents) {
+		$this->featureFileContents = $contents;
+	}
+
+	public function setScenario(Scenario $scenario = null) {
+		$this->scenario = $scenario;
+	}
+
+	public function beforeApply(string $file, OutcomeCollection $collection) {
 		return null;
 	}
 
-	public function applyOnBackground($background) {
+	public function applyOnBackground(Background $background, OutcomeCollection $collection) {
 		return null;
 	}
 
-	public function beforeApplyOnScenario($scenario) {
+	public function beforeApplyOnScenario(Scenario $scenario, OutcomeCollection $collection) {
 		return null;
 	}
 
-	public function applyOnScenario($scenario) {
+	public function applyOnScenario(Scenario $scenario, OutcomeCollection $collection) {
 		return null;
 	}
 
-	public function afterApplyOnScenario($scenario) {
+	public function afterApplyOnScenario(Scenario $scenario, OutcomeCollection $collection) {
+		$this->setScenario(null);
 		return null;
 	}
 
-	public function beforeApplyOnStep($step) {
+	public function beforeApplyOnStep(Step $step, OutcomeCollection $collection) {
 		return null;
 	}
 
-	public function applyOnStep($step) {
+	public function applyOnStep(Step $step, OutcomeCollection $collection) {
 		return null;
 	}
 
-	public function afterApplyOnStep($step) {
+	public function afterApplyOnStep(Step $step, OutcomeCollection $collection) {
 		return null;
+	}
+
+	public function getOutcomeObject(
+		string $step,
+		int $lineNumber,
+		string $message,
+		string $severity
+	): Outcome {
+		return new Outcome(
+			static::class,
+			$this->featureFileContents->filePath,
+			$lineNumber,
+			$message,
+			$severity,
+			$this->scenario->getTitle(),
+			$step
+		);
 	}
 }

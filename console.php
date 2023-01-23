@@ -22,25 +22,60 @@
 // 12. Step definition should not execute complex statements.
 // 13. Defined step definitions should be used atleast once.
 
+use Forceedge01\BDDStaticAnalyser\Processor;
+use Forceedge01\BDDStaticAnalyser\Entities;
 
 //Config
+require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/config.php';
 
-$folderContents = scandir($dir);
-
-function is_feature_file($file) {
+function isFeatureFile($file) {
 	if (is_file($file) && has_extension($file, $feature_file_extension)) {
 		return true;
 	}
 }
 
-$rulesProcessor = new RulesProcessor($rules);
+function getAllFeatureFiles(string $directory, string $feature_file_extension) {
+    $files = scandir($directory);
+    $features = [];
+    foreach ($files as $file) {
+        if (is_dir($file) && ($file != '.' && $file != '..')) {
+        	echo $file;
+        	echo $directory . DIRECTORY_SEPARATOR . $file;
+        	exit;
+        	$featrues[] = getAllFeatureFiles($directory . DIRECTORY_SEPARATOR . $file);
+        }
 
-foreach ($folderContents as $folderContent) {
-	if (is_feature_file($folderContent)) {
-		$outcomes[] = $rulesProcessessor->applyRules($folderContent);
-	}
+        if (strpos($file, '.' . $feature_file_extension) !== false) {
+            $features[] = $directory . DIRECTORY_SEPARATOR . $file;
+        }
+    }
+
+    return $features;
 }
 
-$displayProcessor = new DisplayProcessor();
-$displayProcessor->display($outcomes);
+echo '<===== Behaviour Automation Suite Analayser =====>' . PHP_EOL . PHP_EOL;
+
+$path = $argv[1];
+$dir_to_scan = realpath($path);
+
+try {
+
+    if (! $dir_to_scan || ! is_dir($dir_to_scan)) {
+        throw new Exception("First param (provided: '$path') must point to the folder where feature files are stored.");
+    }
+
+    $rulesProcessor = new Processor\RulesProcessor($rules);
+    $files = getAllFeatureFiles($dir_to_scan, $feature_file_extension);
+    $outcomeCollection = new Entities\OutcomeCollection();
+
+    foreach ($files as $file) {
+    	$outcomes[] = $rulesProcessor->applyRules($file, $outcomeCollection);
+    }
+
+    $displayProcessor = new Processor\DisplayProcessor();
+    $displayProcessor->display($outcomeCollection);
+} catch (\Exception $e) {
+    echo '==> Error: ' . $e->getMessage() . PHP_EOL;
+    exit;
+}

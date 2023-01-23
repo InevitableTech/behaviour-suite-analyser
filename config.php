@@ -1,9 +1,8 @@
 <?php
 
-use BDDStaticAnalyser\Rules;
+use Forceedge01\BDDStaticAnalyser\Rules;
 
 // Parent directory where all feature files are present.
-$dir_to_scan = __DIR__ . '/testproject';
 $feature_file_extension = 'feature';
 $step_definition_file_extension = 'php';
 
