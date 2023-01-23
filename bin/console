@@ -8,9 +8,7 @@
 // 6. Check background length.
 // 7. Send report to live server, show local report.
 
-
-
-// Rules 
+// Rules
 // 3. Each step should refer to first person
 // 4. The total length of a scenario should not exceed X
 // 6. Stats on files and folders.

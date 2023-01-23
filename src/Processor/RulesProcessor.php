@@ -7,18 +7,32 @@ use Forceedge01\BDDStaticAnalyser\Entities;
 
 class RulesProcessor {
 	private array $rules = [];
+	private array $ruleObjects = [];
 	private array $outcome = [];
 
 	public function __construct($rules) {
 		$this->rules = $rules;
 	}
 
+	/**
+	 * All rules are applied everytime on each file.
+	 */
 	public function applyRules($file, Entities\OutcomeCollection $collection): Entities\OutcomeCollection {
 		foreach ($this->rules as $rule => $params) {
-			$this->outcome[] = $this->applyRule($file, new $rule($params), $collection);
+			$this->outcome[] = $this->applyRule($file, $this->getRule($rule, $params), $collection);
 		}
 
 		return $collection;
+	}
+
+	public function getRule(string $rule, array $params = null): Rules\RuleInterface {
+		if (isset($this->ruleObjects[$rule])) {
+			return $this->ruleObjects[$rule]->reset();
+		}
+
+		$this->ruleObjects[$rule] = new $rule($params);
+
+		return $this->ruleObjects[$rule];
 	}
 
 	public function applyRule(

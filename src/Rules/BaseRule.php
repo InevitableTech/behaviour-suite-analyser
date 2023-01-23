@@ -10,6 +10,13 @@ use Forceedge01\BDDStaticAnalyser\Entities\Step;
 use Forceedge01\BDDStaticAnalyser\Entities\FeatureFileContents;
 
 abstract class BaseRule implements RuleInterface {
+	public function reset() {
+		$this->featureFileContents = null;
+		$this->scenario = null;
+
+		return $this;
+	}
+
 	public function setFeatureFileContents(FeatureFileContents $contents) {
 		$this->featureFileContents = $contents;
 	}

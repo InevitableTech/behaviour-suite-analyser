@@ -6,6 +6,7 @@ use Forceedge01\BDDStaticAnalyser\Rules;
 $feature_file_extension = 'feature';
 $step_definition_file_extension = 'php';
 
+// Class => ?array
 $rules = [
 	Rules\NoUrlInSteps::class => null,
 	// NoLongScenarios::class => 20,
