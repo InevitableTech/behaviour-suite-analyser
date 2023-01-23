@@ -5,6 +5,8 @@ namespace Forceedge01\BDDStaticAnalyser\Rules;
 use Forceedge01\BDDStaticAnalyser\Entities;
 
 class NoUrlInSteps extends BaseRule {
+    const VIOLATION_MESSAGE = 'Hardcoded url found, should be abstracted.';
+
     public function applyOnStep(
         Entities\Step $step,
         Entities\OutcomeCollection $collection
@@ -14,7 +16,7 @@ class NoUrlInSteps extends BaseRule {
         if (count($match) > 0) {
             $collection->addOutcome($this->getOutcomeObject(
                 $step->lineNumber,
-                $message = 'Hardcoded url found, should be abstracted.',
+                self::VIOLATION_MESSAGE,
                 Entities\Outcome::HIGH,
                 $step->getStepDefinition()
             ));
