@@ -9,6 +9,7 @@ class RulesProcessor {
 	private array $rules = [];
 	private array $ruleObjects = [];
 	private array $outcome = [];
+	private array $fileObjectLibrary = [];
 
 	public function __construct($rules) {
 		$this->rules = $rules;
@@ -18,8 +19,14 @@ class RulesProcessor {
 	 * All rules are applied everytime on each file.
 	 */
 	public function applyRules($file, Entities\OutcomeCollection $collection): Entities\OutcomeCollection {
+		$collection->summary['files']++;
+		$collection->summary['activeRules'] = count($this->rules);
+
+		$contentObject = $this->getFileContent($file);
 		foreach ($this->rules as $rule => $params) {
-			$this->outcome[] = $this->applyRule($file, $this->getRule($rule, $params), $collection);
+			$rule = $this->getRule($rule, $params);
+			$rule->beforeApply($file, $collection);
+			$this->outcome[] = $this->applyRule($contentObject, $rule, $collection);
 		}
 
 		return $collection;
@@ -36,22 +43,20 @@ class RulesProcessor {
 	}
 
 	public function applyRule(
-		string $file,
+		Entities\FeatureFileContents $contentObject,
 		Rules\RuleInterface $rule,
 		Entities\OutcomeCollection $collection
 	): Entities\OutcomeCollection {
-		$rule->beforeApply($file, $collection);
-
-		$contentObject = $this->getFileContent($file);
-
 		$rule->setFeatureFileContents($contentObject);
 
 		if ($contentObject->background) {
+			$collection->addSummary('backgrounds', $contentObject->filePath . $contentObject->background->lineNumber);
 			$rule->applyOnBackground($contentObject->background, $collection);
 		}
 
 		foreach ($contentObject->scenarios as $scenario) {
 			// Scenarios
+			$collection->addSummary('scenarios', $contentObject->filePath . $scenario->lineNumber);
 			$rule->setScenario($scenario);
 			$rule->beforeApplyOnScenario($scenario, $collection);
 			$rule->applyOnScenario($scenario, $collection);
@@ -60,6 +65,7 @@ class RulesProcessor {
 			$steps = $scenario->getSteps();
 
 			foreach ($steps as $index => $step) {
+				$collection->addSummary('activeSteps', $step->getStepDefinition());
 				$rule->beforeApplyOnStep($step, $collection);
 				$rule->applyOnStep($step, $collection);
 				$rule->afterApplyOnStep($step, $collection);
@@ -72,19 +78,25 @@ class RulesProcessor {
 	}
 
 	private function getFileContent(string $file): Entities\FeatureFileContents {
+		if (isset($this->fileObjectLibrary[$file])) {
+			return $this->fileObjectLibrary[$file];
+		}
+
 		$contents = file($file, FILE_IGNORE_NEW_LINES);
 
 		$feature = $this->getFeature($contents);
 		$background = $this->getBackground($contents);
 		$scenarios = $this->getScenarios($contents);
 
-		return new Entities\FeatureFileContents(
+		$this->fileObjectLibrary[$file] = new Entities\FeatureFileContents(
 			$contents,
 			$file,
 			$feature,
 			$background,
 			$scenarios
 		);
+
+		return $this->fileObjectLibrary[$file];
 	}
 
 	private function isScenarioDeclaration(string $line): bool {

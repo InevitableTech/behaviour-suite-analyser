@@ -8,15 +8,11 @@ Feature: testing
         When I do
         Then I should see
 
-    Scenario: Testing something in the feature
-        Given I am on the login page
-        And I fill in the credentials
-        And I submit the details
-        Then I should be on the dashboard
-
     Scenario: Another Testing something in the feature
         Given I am on the login page
-        And I fill in the credentials
+        And I fill in the credentials:
+            | abc 1 | abc asdfasdfs2 |
+            | abc 1 | abc 2 |
         And I submit the details "http://kjhakdf"
         Then I should whatever
 
@@ -24,6 +20,13 @@ Feature: testing
             | column 1  | column 2   |
             | abc       | askhdf     |
             | kjashdfjk | akdlsfhkja |
+
+
+    Scenario: Testing something in the feature
+        Given I am on the login page
+        And I fill in the credentials
+        And I submit the details
+        Then I should be on the dashboard
 
     Scenario: 3rd Testing something in the feature
         Given I am on the login page

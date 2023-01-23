@@ -25,5 +25,6 @@ class Outcome {
         $this->scenario = $scenario;
         $this->step = $step;
         $this->message = $message;
+        $this->uniqueScenarioId = $file . '-' . $line;
     }
 }
