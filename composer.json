@@ -13,5 +13,13 @@
             "name": "Abdul Wahhab Qureshi"
         }
     ],
-    "require": {}
+    "require": {},
+    "bin": ["console.php"],
+    "extra": {
+        "scripts": {
+            "post-install-cmd": [
+                "chmod +x bin/console"
+            ]
+        }
+    }
 }

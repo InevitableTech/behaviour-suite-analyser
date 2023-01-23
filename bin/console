@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 // 1. Load folder and find files of type .feature
@@ -26,8 +27,8 @@ use Forceedge01\BDDStaticAnalyser\Processor;
 use Forceedge01\BDDStaticAnalyser\Entities;
 
 //Config
-require __DIR__ . '/vendor/autoload.php';
-require __DIR__ . '/config.php';
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../config.php';
 
 function isFeatureFile($file) {
 	if (is_file($file) && has_extension($file, $feature_file_extension)) {
@@ -39,14 +40,12 @@ function getAllFeatureFiles(string $directory, string $feature_file_extension) {
     $files = scandir($directory);
     $features = [];
     foreach ($files as $file) {
-        if (is_dir($file) && ($file != '.' && $file != '..')) {
-        	echo $file;
-        	echo $directory . DIRECTORY_SEPARATOR . $file;
-        	exit;
-        	$featrues[] = getAllFeatureFiles($directory . DIRECTORY_SEPARATOR . $file);
-        }
-
-        if (strpos($file, '.' . $feature_file_extension) !== false) {
+        $dirPath = $directory . DIRECTORY_SEPARATOR . $file;
+        if (is_dir($dirPath) && ($file != '.' && $file != '..')) {
+            // echo $dirPath . PHP_EOL;
+        	$features = array_merge($features, getAllFeatureFiles($dirPath, $feature_file_extension));
+        } else if (strpos($file, '.' . $feature_file_extension) !== false) {
+            // echo $file . PHP_EOL;
             $features[] = $directory . DIRECTORY_SEPARATOR . $file;
         }
     }
@@ -56,10 +55,13 @@ function getAllFeatureFiles(string $directory, string $feature_file_extension) {
 
 echo '<===== Behaviour Automation Suite Analayser =====>' . PHP_EOL . PHP_EOL;
 
-$path = $argv[1];
-$dir_to_scan = realpath($path);
-
 try {
+    if (! isset($argv[1])) {
+        throw new Exception('First param (folder where behaviour scripts reside) must be provided.');
+    }
+
+    $path = $argv[1];
+    $dir_to_scan = realpath($path);
 
     if (! $dir_to_scan || ! is_dir($dir_to_scan)) {
         throw new Exception("First param (provided: '$path') must point to the folder where feature files are stored.");
