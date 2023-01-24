@@ -11,6 +11,10 @@ class OutcomeCollection extends Collection {
         'activeRules' => null
     ];
 
+    public function setItems(array $items) {
+        $this->items = $items;
+    }
+
     public function addOutcome(Outcome $item) {
         $this->add($item);
     }

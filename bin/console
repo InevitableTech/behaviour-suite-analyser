@@ -8,25 +8,11 @@
 // 6. Check background length.
 // 7. Send report to live server, show local report.
 
-// Rules
-// 3. Each step should refer to first person
-// 4. The total length of a scenario should not exceed X
-// 6. Stats on files and folders.
-// 7. Map how the website looks like based on the structure of the files and folders.
-// 8. Extract number of pages contained and form a hierarchy of the web application.
-// 8. Stats on real time execution? Not now.
-// 9. Scenario should be in Given, When, And, Then, But order.
-// 10. Scenario must have atleast one Then statement.
-// 11. Language should be ubiquitous.
-// 12. Step definition should not execute complex statements.
-// 13. Defined step definitions should be used atleast once.
-
 use Forceedge01\BDDStaticAnalyser\Processor;
 use Forceedge01\BDDStaticAnalyser\Entities;
 
 //Config
 require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../config.php';
 
 function isFeatureFile($file) {
 	if (is_file($file) && has_extension($file, $feature_file_extension)) {
@@ -51,32 +37,67 @@ function getAllFeatureFiles(string $directory, string $feature_file_extension) {
     return $features;
 }
 
+function helpMenu(array $options) {
+    echo 'Help menu' . PHP_EOL;
+    echo '----' . PHP_EOL;
+    foreach ($options as $option => $description) {
+        echo '-' . rtrim($option,':') . '     ' . $description . PHP_EOL;
+    }
+
+    echo PHP_EOL;
+}
+
 echo '<===== Behaviour Automation Suite Analayser =====>' . PHP_EOL . PHP_EOL;
 
 try {
-    if (! isset($argv[1])) {
-        throw new Exception('First param (folder where behaviour scripts reside) must be provided.');
+    $options = [
+        'd:' => 'Directory to scan for feature files',
+        's::' => 'Severities to report (Default: 0,1,2,3,4)',
+        'c::' => 'Path to config file',
+        'h::' => 'This menu'
+    ];
+
+    $input = getopt(implode('', array_keys($options)));
+
+    $path = isset($input['d']) ? $input['d'] : '';
+    $severities = isset($input['s']) ? $input['s'] : '0,1,2,3,4';
+    $configFile = isset($input['c']) ? realpath($input['c']) : __DIR__ . '/../config.php';
+
+    if (isset($input['h'])) {
+        helpMenu($options);
+        exit;
     }
 
-    $path = $argv[1];
-    $dir_to_scan = realpath($path);
+    if (! is_file($configFile)) {
+        throw new Exception("Config file path '{$input['c']}' is not recognised as a valid file path.");
+    }
 
-    if (! $dir_to_scan || ! is_dir($dir_to_scan)) {
-        throw new Exception("First param (provided: '$path') must point to the folder where feature files are stored.");
+    $config = new Entities\Config(include $configFile);
+    $dirToScan = realpath($path);
+    $displayProcessorClass = $config->get('display_processor');
+    $displayProcessor = new $displayProcessorClass();
+    $displayProcessor->inputSummary($path, $severities, $configFile, $dirToScan);
+    $severities = explode(',' , $severities);
+
+    if (! $dirToScan || ! is_dir($dirToScan)) {
+        throw new Exception("-d param (provided: '$path') must point to the folder where feature files are stored.");
     }
 
     $featureFileProcessor = new Processor\FeatureFileProcessor();
-    $rulesProcessor = new Processor\RulesProcessor($rules);
-    $files = getAllFeatureFiles($dir_to_scan, $feature_file_extension);
+    $rulesProcessor = new Processor\RulesProcessor($config->get('rules'));
+    $files = getAllFeatureFiles($dirToScan, $config->get('feature_file_extension'));
     $outcomeCollection = new Entities\OutcomeCollection();
+
+    if (! $files) {
+        throw new Exception("No feature files found in path '$dirToScan'");
+    }
 
     foreach ($files as $file) {
         $fileContents = $featureFileProcessor->getFileContent($file);
     	$outcomes[] = $rulesProcessor->applyRules($fileContents, $outcomeCollection);
     }
 
-    $displayProcessor = new $displayProcessor();
-    $displayProcessor->displayOutcomes($outcomeCollection);
+    $displayProcessor->displayOutcomes($outcomeCollection, $severities);
     $displayProcessor->printSummary($outcomeCollection);
 } catch (\Exception $e) {
     echo '==> Error: ' . $e->getMessage() . PHP_EOL;
