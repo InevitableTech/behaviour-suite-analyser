@@ -62,7 +62,8 @@ abstract class BaseRule implements RuleInterface {
 		int $lineNumber,
 		string $message,
 		string $severity,
-		string $step = null
+		string $step = null,
+		string $rawStep = null
 	): Outcome {
 		return new Outcome(
 			static::class,
@@ -71,7 +72,8 @@ abstract class BaseRule implements RuleInterface {
 			$message,
 			$severity,
 			$this->scenario->getTitle(),
-			$step
+			$step,
+			$rawStep
 		);
 	}
 }

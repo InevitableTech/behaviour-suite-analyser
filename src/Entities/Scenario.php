@@ -3,10 +3,11 @@
 namespace Forceedge01\BDDStaticAnalyser\Entities;
 
 class Scenario {
-    public function __construct(int $lineNumber, array $scenario) {
+    public function __construct(int $lineNumber, array $scenario, bool $active = true) {
         $this->lineNumber = $lineNumber;
         $this->scenario = $scenario;
         $this->examples = $this->getExamples($scenario);
+        $this->active = $active;
     }
 
     public function getSteps(): ?array {

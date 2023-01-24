@@ -65,16 +65,19 @@ try {
         throw new Exception("First param (provided: '$path') must point to the folder where feature files are stored.");
     }
 
+    $featureFileProcessor = new Processor\FeatureFileProcessor();
     $rulesProcessor = new Processor\RulesProcessor($rules);
     $files = getAllFeatureFiles($dir_to_scan, $feature_file_extension);
     $outcomeCollection = new Entities\OutcomeCollection();
 
     foreach ($files as $file) {
-    	$outcomes[] = $rulesProcessor->applyRules($file, $outcomeCollection);
+        $fileContents = $featureFileProcessor->getFileContent($file);
+    	$outcomes[] = $rulesProcessor->applyRules($fileContents, $outcomeCollection);
     }
 
-    $displayProcessor = new Processor\DisplayProcessor();
-    $displayProcessor->display($outcomeCollection);
+    $displayProcessor = new $displayProcessor();
+    $displayProcessor->displayOutcomes($outcomeCollection);
+    $displayProcessor->printSummary($outcomeCollection);
 } catch (\Exception $e) {
     echo '==> Error: ' . $e->getMessage() . PHP_EOL;
     exit;

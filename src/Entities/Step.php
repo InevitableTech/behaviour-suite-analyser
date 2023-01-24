@@ -6,6 +6,7 @@ class Step {
     public function __construct(int $lineNumber, string $title, array $table = []) {
         $this->lineNumber = $lineNumber;
         $this->title = $title;
+        $this->trimmedTitle = trim($title);
         $this->table = $table;
     }
 
@@ -15,5 +16,13 @@ class Step {
 
         // Remove params.
         return preg_replace(['/\d+/i', '/".*"/is'], ['<num>', '<string>'], $filtered);
+    }
+
+    public function isActive(): bool {
+        if (strpos($this->trimmedTitle, '#') === 0 || strpos($this->trimmedTitle, '//') === 0) {
+            return false;
+        }
+
+        return true;
     }
 }

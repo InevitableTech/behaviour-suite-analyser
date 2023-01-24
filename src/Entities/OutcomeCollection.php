@@ -18,4 +18,12 @@ class OutcomeCollection extends Collection {
     public function addSummary(string $category, string $id) {
         $this->summary[$category][$id] = $id;
     }
+
+    public function getSummaryCount($key) {
+        if (! isset($this->summary[$key])) {
+            return 0;
+        }
+
+        return count($this->summary[$key]);
+    }
 }

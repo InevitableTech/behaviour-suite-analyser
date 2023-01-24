@@ -13,7 +13,7 @@ Feature: testing
         And I fill in the credentials:
             | abc 1 | abc asdfasdfs2 |
             | abc 1 | abc 2 |
-        And I submit the details "http://kjhakdf"
+        # And I submit the details "http://kjhakdf"
         Then I should whatever
 
         Examples:
