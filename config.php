@@ -10,7 +10,7 @@ return [
 	// Configure which class will process the outcomes and display the summary.
 	'display_processor' => Forceedge01\BDDStaticAnalyser\Processor\DisplayProcessor::class,
 	'report_processor' => Forceedge01\BDDStaticAnalyser\Processor\ReportProcessor::class,
-	'html_report_path' => './build/report.html',
+	'html_report_path' => __DIR__ . '/build/report.html',
 
 	// Class => ?array
 	'rules' => [

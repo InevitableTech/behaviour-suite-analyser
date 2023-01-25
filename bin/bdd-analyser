@@ -11,17 +11,6 @@
 use Forceedge01\BDDStaticAnalyser\Processor;
 use Forceedge01\BDDStaticAnalyser\Entities;
 
-//Config
-// $autoloadFile = __DIR__ . '/../autoload.php';
-
-// if (is_file($autoloadFile)) {
-//     // We're being used as a composer package.
-//     require $autoloadFile;
-// } else {
-//     // we're in development mode.
-//     require __DIR__ . '/../vendor/autoload.php';
-// }
-
 include $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
 
 function isFeatureFile($file) {
@@ -79,6 +68,10 @@ try {
         exit;
     }
 
+    if (! $path) {
+        throw new Exception('A path must be provided (-d=<path>) to scan for files.');
+    }
+
     if (! is_file($configFile)) {
         throw new Exception("Config file path '{$input['c']}' is not recognised as a valid file path.");
     }
@@ -120,7 +113,7 @@ try {
     $displayProcessor->displayOutcomes($outcomeCollection, $severities);
     $reportProcessorClass = $config->get('report_processor');
     $reportProcessor = new $reportProcessorClass(new Processor\HtmlProcessor(), $featureFileProcessor);
-    $reportPath = __DIR__ . '/../' . $config->get('html_report_path');
+    $reportPath = $config->get('html_report_path');
     $reportPath = $reportProcessor->generate($reportPath, $severities, $outcomeCollection);
     $displayProcessor->printSummary($outcomeCollection, $reportPath);
 } catch (\Exception $e) {
