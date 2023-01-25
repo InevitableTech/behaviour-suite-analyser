@@ -1,7 +1,7 @@
 {
     "name": "forceedge01/bdd-analyser",
     "description": "Analyse bdd scripts and find issues with detailed information and how to address these issues to prolong the longevitiy of your behaviour suite",
-    "type": "composer-plugin",
+    "type": "library",
     "license": "MIT",
     "keywords": ["cli","command-line", "test-automation", "behaviour-tests", "behaviour-suite"],
     "autoload": {
