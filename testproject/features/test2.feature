@@ -9,6 +9,7 @@ Feature: Another
         And I submit the details
         Then I should be on the dashboard
 
+    @wip
     Scenario: 6th Testing something in the feature
         Given I am on the login page
         And I fill in the credentials

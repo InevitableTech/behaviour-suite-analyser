@@ -46,6 +46,7 @@ class RulesProcessor {
 		Entities\OutcomeCollection $collection
 	): Entities\OutcomeCollection {
 		$rule->setFeatureFileContents($contentObject);
+		$rule->applyOnFeature($contentObject, $collection);
 
 		if ($contentObject->background) {
 			$collection->addSummary('backgrounds', $contentObject->filePath . $contentObject->background->lineNumber);

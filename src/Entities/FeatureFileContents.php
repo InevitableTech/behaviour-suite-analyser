@@ -6,7 +6,7 @@ class FeatureFileContents {
     public function __construct(
         array $raw,
         string $filePath,
-        array $feature,
+        Feature $feature,
         ?Background $background,
         array $scenarios
     ) {

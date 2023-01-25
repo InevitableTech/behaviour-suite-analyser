@@ -3,10 +3,19 @@
 namespace Forceedge01\BDDStaticAnalyser\Entities;
 
 class Outcome {
+    // Informational.
     const LOW = 0;
+
+    // Cleanup related.
     const MEDIUM = 1;
+
+    // Maintainability issues.
     const HIGH = 2;
+
+    // Reliability/Speed issues.
     const SERIOUS = 3;
+
+    // Architectural issues.
     const CRITICAL = 4;
 
     public function __construct(
@@ -16,7 +25,7 @@ class Outcome {
         string $message,
         string $severity,
         string $scenario = null,
-        string $step = null,
+        string $violatingLine = null,
         string $rawStep = null
     ) {
         $this->rule = $rule;
@@ -24,7 +33,7 @@ class Outcome {
         $this->lineNumber = $lineNumber;
         $this->severity = $severity;
         $this->scenario = $scenario;
-        $this->step = $step;
+        $this->violatingLine = $violatingLine;
         $this->rawStep = $rawStep;
         $this->message = $message;
         $this->uniqueScenarioId = $file . ':' . $lineNumber;

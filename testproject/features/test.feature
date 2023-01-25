@@ -1,3 +1,4 @@
+@dev @test-123
 Feature: testing
     In order to test the behaviour analyser
     As the creator of the analyser
@@ -8,6 +9,7 @@ Feature: testing
         When I do
         Then I should see
 
+    @check
     Scenario: Another Testing something in the feature
         Given I am on the login page
         And I fill in the credentials:
@@ -21,7 +23,7 @@ Feature: testing
             | abc       | askhdf     |
             | kjashdfjk | akdlsfhkja |
 
-
+    @testing-tag
     Scenario: Testing something in the feature
         Given I am on the login page
         And I fill in the credentials
@@ -34,6 +36,7 @@ Feature: testing
         And I submit the details "https://lahsjdhfladh"
         Then I should whatever
 
+    @dev
     Scenario: 4th
         Given I am on the login page
         And I fill in the credentials

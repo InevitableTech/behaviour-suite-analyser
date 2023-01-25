@@ -10,6 +10,10 @@ use Forceedge01\BDDStaticAnalyser\Entities\Step;
 use Forceedge01\BDDStaticAnalyser\Entities\FeatureFileContents;
 
 abstract class BaseRule implements RuleInterface {
+	private $featureFileContents = null;
+
+	private $scenario = null;
+
 	public function reset() {
 		$this->featureFileContents = null;
 		$this->scenario = null;
@@ -26,6 +30,10 @@ abstract class BaseRule implements RuleInterface {
 	}
 
 	public function beforeApply(string $file, OutcomeCollection $collection) {
+		return null;
+	}
+
+	public function applyOnFeature(FeatureFileContents $contents, OutcomeCollection $collection) {
 		return null;
 	}
 
@@ -62,7 +70,7 @@ abstract class BaseRule implements RuleInterface {
 		int $lineNumber,
 		string $message,
 		string $severity,
-		string $step = null,
+		string $violatingLine = null,
 		string $rawStep = null
 	): Outcome {
 		return new Outcome(
@@ -71,8 +79,8 @@ abstract class BaseRule implements RuleInterface {
 			$lineNumber,
 			$message,
 			$severity,
-			$this->scenario->getTitle(),
-			$step,
+			$this->scenario ? $this->scenario->getTitle() : null,
+			$violatingLine,
 			$rawStep
 		);
 	}

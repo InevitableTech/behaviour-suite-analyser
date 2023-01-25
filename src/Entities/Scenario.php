@@ -89,7 +89,12 @@ class Scenario {
         return count($this->getSteps());
     }
 
-    public function getCount(): int {
-        return count($this->scenarios);
+    public function getTags(): array {
+        preg_match('/^@.*/', $this->scenario[0], $matches);
+        if (count($matches) > 0) {
+            return explode(' ', $this->scenario[0]);
+        }
+
+        return [];
     }
 }

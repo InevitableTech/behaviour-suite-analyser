@@ -54,7 +54,8 @@ try {
         'd:' => 'Directory to scan for feature files',
         's::' => 'Severities to report (Default: 0,1,2,3,4)',
         'c::' => 'Path to config file',
-        'h::' => 'This menu'
+        'h::' => 'This menu',
+        'v::' => 'Verbose and debug'
     ];
 
     $input = getopt(implode('', array_keys($options)));
@@ -94,11 +95,23 @@ try {
 
     foreach ($files as $file) {
         $fileContents = $featureFileProcessor->getFileContent($file);
-    	$outcomes[] = $rulesProcessor->applyRules($fileContents, $outcomeCollection);
+
+        if (isset($input['v'])) {
+            print_r($fileContents);
+        }
+
+    	$rulesProcessor->applyRules($fileContents, $outcomeCollection);
+    }
+
+    if (isset($input['v'])) {
+        print_r($outcomeCollection);
     }
 
     $displayProcessor->displayOutcomes($outcomeCollection, $severities);
-    $displayProcessor->printSummary($outcomeCollection);
+    $reportProcessor = new Processor\ReportProcessor(new Processor\HtmlProcessor(), $featureFileProcessor);
+    $reportPath = __DIR__ . '/../' . $config->get('html_report_path');
+    $reportPath = $reportProcessor->generate($reportPath, $severities, $outcomeCollection);
+    $displayProcessor->printSummary($outcomeCollection, $reportPath);
 } catch (\Exception $e) {
     echo '==> Error: ' . $e->getMessage() . PHP_EOL;
     exit;

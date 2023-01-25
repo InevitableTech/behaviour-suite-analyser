@@ -3,6 +3,7 @@
     "description": "Analyse bdd scripts and find issues with detailed information and how to address these issues to prolong the longevitiy of your behaviour suite",
     "type": "composer-plugin",
     "license": "MIT",
+    "keywords": ["cli","command-line", "test-automation", "behaviour-tests", "behaviour-suite"],
     "autoload": {
         "psr-4": {
             "Forceedge01\\BDDStaticAnalyser\\": "src/"
@@ -14,11 +15,11 @@
         }
     ],
     "require": {},
-    "bin": ["console.php"],
+    "bin": ["bin/bdd-analyser"],
     "extra": {
         "scripts": {
             "post-install-cmd": [
-                "chmod +x bin/console"
+                "chmod +x bin/bdd-analyser"
             ]
         }
     }

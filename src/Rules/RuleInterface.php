@@ -16,6 +16,8 @@ interface RuleInterface {
 
     public function beforeApply(string $file, OutcomeCollection $collection);
 
+    public function applyOnFeature(FeatureFileContents $contents, OutcomeCollection $collection);
+
     public function applyOnBackground(Background $background, OutcomeCollection $collection);
 
     public function beforeApplyOnScenario(Scenario $scenario, OutcomeCollection $collection);
