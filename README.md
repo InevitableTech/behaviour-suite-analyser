@@ -1,13 +1,16 @@
 Install
 ====
 
+```
 composer require forceedge01/bdd-analyser --dev
+```
 
-Config in the Config.php file, setup includes the kind of files you want to scan and the rules you want to active.
+Copy config.php file to root of project, setup includes the kind of files you want to scan and the rules you want applied.
 
 Example run:
 
 ```bash
+cp vendor/forceedge01/bdd-analyser/config.php .
 vendor/bin/bdd-analyser -d=features/ -c=config.php
 ```
 
