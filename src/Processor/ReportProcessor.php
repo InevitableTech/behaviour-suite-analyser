@@ -4,7 +4,7 @@ namespace Forceedge01\BDDStaticAnalyser\Processor;
 
 use Forceedge01\BDDStaticAnalyser\Entities;
 
-class ReportProcessor {
+class ReportProcessor implements ReportProcessorInterface {
     public function __construct(HtmlProcessor $html, FeatureFileProcessor $featureFileProcessor) {
         $this->html = $html;
         $this->featureFileProcessor = $featureFileProcessor;
@@ -79,7 +79,7 @@ class ReportProcessor {
         $html->openCloseTag('div', 'Violation: ' . $outcome->message . ' (' . $outcome->severity . ')', 'row error violation');
     }
 
-    public function saveFile(string $path, string $content) {
+    private function saveFile(string $path, string $content) {
         $folderPath = dirname($path);
         if (!is_dir($folderPath) && !mkdir($folderPath, 0777, true)) {
             throw new \Exception('Unable to create folder for report at path ' . $folderPath);
