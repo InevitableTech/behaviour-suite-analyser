@@ -30,6 +30,20 @@ class DisplayProcessor implements DisplayProcessorInterface {
 		echo 'Config path: ' . $configPath . PHP_EOL . PHP_EOL;
 	}
 
+	public function printSummary(Entities\OutcomeCollection $outcomes, string $reportPath) {
+		$violationsCount = count($outcomes->getItems());
+		echo PHP_EOL;
+		echo 'Summary' . PHP_EOL;
+		echo '----' . PHP_EOL;
+		echo 'Violations: ' . $violationsCount . ', ';
+		echo "files: {$outcomes->summary['files']}, ";
+		echo "backgrounds: {$outcomes->getSummaryCount('backgrounds')}, ";
+		echo "scenarios: {$outcomes->getSummaryCount('scenarios')}, ";
+		echo "activeSteps: {$outcomes->getSummaryCount('activeSteps')}, ";
+		echo "activeRules: {$outcomes->getSummaryCount('activeRules')}." . PHP_EOL;
+		echo 'Html report generated: file://' . realpath($reportPath) . PHP_EOL . PHP_EOL;
+	}
+
 	private function displaySingleOutcomeSummary(int $itemNumber, Entities\Outcome $outcome) {
 		echo "   $itemNumber.| [Line: $outcome->lineNumber, Severity: $outcome->severity] - $outcome->message ({$outcome->getRuleShortName()})" . PHP_EOL;
 
@@ -38,17 +52,5 @@ class DisplayProcessor implements DisplayProcessorInterface {
 		}
 
 		echo PHP_EOL;
-	}
-
-	public function printSummary(Entities\OutcomeCollection $outcomes, string $reportPath) {
-		echo PHP_EOL;
-		echo 'Summary' . PHP_EOL;
-		echo '----' . PHP_EOL;
-		echo "files: {$outcomes->summary['files']}, ";
-		echo "backgrounds: {$outcomes->getSummaryCount('backgrounds')}, ";
-		echo "scenarios: {$outcomes->getSummaryCount('scenarios')}, ";
-		echo "activeSteps: {$outcomes->getSummaryCount('activeSteps')}, ";
-		echo "activeRules: {$outcomes->getSummaryCount('activeRules')}." . PHP_EOL;
-		echo 'Html report generated: file://' . realpath($reportPath) . PHP_EOL . PHP_EOL;
 	}
 }
