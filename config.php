@@ -7,10 +7,10 @@ return [
 	'feature_file_extension' => 'feature',
 	'step_definition_file_extension' => 'php',
 
-	'html_report_path' => './build/report.html',
-
 	// Configure which class will process the outcomes and display the summary.
 	'display_processor' => Forceedge01\BDDStaticAnalyser\Processor\DisplayProcessor::class,
+	'report_processor' => Forceedge01\BDDStaticAnalyser\Processor\ReportProcessor::class,
+	'html_report_path' => './build/report.html',
 
 	// Class => ?array
 	'rules' => [

@@ -108,7 +108,8 @@ try {
     }
 
     $displayProcessor->displayOutcomes($outcomeCollection, $severities);
-    $reportProcessor = new Processor\ReportProcessor(new Processor\HtmlProcessor(), $featureFileProcessor);
+    $reportProcessorClass = $config->get('report_processor');
+    $reportProcessor = new $reportProcessorClass(new Processor\HtmlProcessor(), $featureFileProcessor);
     $reportPath = __DIR__ . '/../' . $config->get('html_report_path');
     $reportPath = $reportProcessor->generate($reportPath, $severities, $outcomeCollection);
     $displayProcessor->printSummary($outcomeCollection, $reportPath);
