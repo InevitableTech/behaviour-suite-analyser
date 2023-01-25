@@ -14,7 +14,9 @@
             "name": "Abdul Wahhab Qureshi"
         }
     ],
-    "require": {},
+    "require": {
+        "composer-runtime-api": "^2.2"
+    },
     "bin": ["bin/bdd-analyser"],
     "extra": {
         "scripts": {

@@ -12,15 +12,17 @@ use Forceedge01\BDDStaticAnalyser\Processor;
 use Forceedge01\BDDStaticAnalyser\Entities;
 
 //Config
-$autoloadFile = __DIR__ . '/../autoload.php';
+// $autoloadFile = __DIR__ . '/../autoload.php';
 
-if (is_file($autoloadFile)) {
-    // We're being used as a composer package.
-    require $autoloadFile;
-} else {
-    // we're in development mode.
-    require __DIR__ . '/../vendor/autoload.php';
-}
+// if (is_file($autoloadFile)) {
+//     // We're being used as a composer package.
+//     require $autoloadFile;
+// } else {
+//     // we're in development mode.
+//     require __DIR__ . '/../vendor/autoload.php';
+// }
+
+include $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
 
 function isFeatureFile($file) {
 	if (is_file($file) && has_extension($file, $feature_file_extension)) {
