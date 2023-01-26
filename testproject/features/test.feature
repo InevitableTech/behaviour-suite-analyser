@@ -23,6 +23,11 @@ Feature: testing
             | abc       | askhdf     |
             | kjashdfjk | akdlsfhkja |
 
+    Scenario: Any comments that are not steps should not be flagged
+        # THis is a generic comment which should not be flagged by rule.
+        # Given this is flagged.
+        And I am here
+
     @testing-tag
     Scenario: Testing something in the feature
         Given I am on the login page

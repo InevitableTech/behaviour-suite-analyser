@@ -25,6 +25,11 @@ class Scenario {
         foreach ($steps as $index => $step) {
             $trimmedStep = trim($step);
 
+            // Strip out any comments within the content.
+            if (! $this->isStepDefinition($trimmedStep)) {
+                continue;
+            }
+
             // If we detect the step will have a table
             if (substr($trimmedStep, -1) === ':' && $trimmedStep != 'Examples:') {
                 $tableStepIndex = $index;
@@ -59,6 +64,10 @@ class Scenario {
         }
 
         return $stepObjects;
+    }
+
+    public function isStepDefinition(string $step): bool {
+        return preg_match('/^#?\s*(given|when|then|and|but)\s.*/i', trim($step));
     }
 
     public function getExamples(array $scenario) {
