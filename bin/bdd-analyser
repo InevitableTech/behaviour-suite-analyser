@@ -12,6 +12,7 @@ use Forceedge01\BDDStaticAnalyser\Processor;
 use Forceedge01\BDDStaticAnalyser\Entities;
 
 include $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
+$VERSION = '0.1';
 
 function isFeatureFile($file) {
 	if (is_file($file) && has_extension($file, $feature_file_extension)) {
@@ -53,8 +54,10 @@ try {
         'd:' => 'Directory to scan for feature files',
         's::' => 'Severities to report (Default: 0,1,2,3,4)',
         'c::' => 'Path to config file',
+        'i::' => 'Initialise a local config file',
         'h::' => 'This menu',
-        'v::' => 'Verbose and debug'
+        'v::' => 'Version',
+        'b::' => 'Verbose and debug'
     ];
 
     $input = getopt(implode('', array_keys($options)));
@@ -65,6 +68,21 @@ try {
 
     if (isset($input['h'])) {
         helpMenu($options);
+        exit;
+    }
+
+    if (isset($input['v'])) {
+        echo 'Version: ' . $VERSION . PHP_EOL;
+        exit;
+    }
+
+    if (isset($input['i'])) {
+        echo 'Initialising new config file' . PHP_EOL;
+        if (copy($configFile, './config.php')) {
+            echo '+ config.php' . PHP_EOL;
+        }else {
+            throw new Exception('Unable to create config file, likely due to permissions. Copy the following contents into a config.php file manually:' . PHP_EOL . PHP_EOL . file_get_contents($configFile));
+        }
         exit;
     }
 
@@ -99,14 +117,14 @@ try {
     foreach ($files as $file) {
         $fileContents = $featureFileProcessor->getFileContent($file);
 
-        if (isset($input['v'])) {
+        if (isset($input['b'])) {
             print_r($fileContents);
         }
 
     	$rulesProcessor->applyRules($fileContents, $outcomeCollection);
     }
 
-    if (isset($input['v'])) {
+    if (isset($input['b'])) {
         print_r($outcomeCollection);
     }
 
