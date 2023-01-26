@@ -27,3 +27,18 @@ Development
 ```
 make install
 ```
+
+Adding new rules is as simple as creating a new class and extending it from the BaseRule class which implements the necessary interface and abstraction.
+
+```php
+
+namespace Forceedge01\BDDStaticAnalyser\Rules;
+
+use Forceedge01\BDDStaticAnalyser\Entities;
+
+class MyRule extends BaseRule {
+
+}
+```
+
+Then simply add your new class to the config.php rules array.
