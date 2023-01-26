@@ -47,6 +47,34 @@ function helpMenu(array $options) {
     echo PHP_EOL;
 }
 
+function handleOptions(array $input, $config, array $options, string $version) {
+    if (isset($input['h'])) {
+        helpMenu($options);
+        exit;
+    }
+
+    if (isset($input['v'])) {
+        echo 'Version: ' . $version . PHP_EOL;
+        exit;
+    }
+
+    if (isset($input['i'])) {
+        echo 'Initialising new config file' . PHP_EOL;
+        if (copy($config->path, './config.php')) {
+            echo '+ config.php' . PHP_EOL;
+        }else {
+            throw new Exception('Unable to create config file, likely due to permissions. Copy the following contents into a config.php file manually:' . PHP_EOL . PHP_EOL . file_get_contents($config->path));
+        }
+        exit;
+    }
+
+    if (isset($input['r'])) {
+        echo 'Active Rules ';
+        print_r($config->get('rules'));
+        exit;
+    }
+}
+
 echo '<===== Behaviour Automation Suite Analayser =====>' . PHP_EOL . PHP_EOL;
 
 try {
@@ -55,6 +83,7 @@ try {
         's::' => 'Severities to report (Default: 0,1,2,3,4)',
         'c::' => 'Path to config file',
         'i::' => 'Initialise a local config file',
+        'r::' => 'Display active rules',
         'h::' => 'This menu',
         'v::' => 'Version',
         'b::' => 'Verbose and debug'
@@ -66,39 +95,22 @@ try {
     $severities = isset($input['s']) ? $input['s'] : '0,1,2,3,4';
     $configFile = isset($input['c']) ? realpath($input['c']) : __DIR__ . '/../config.php';
 
-    if (isset($input['h'])) {
-        helpMenu($options);
-        exit;
-    }
+    $config = new Entities\Config(include $configFile, $configFile);
+    handleOptions($input, $config, $options, $VERSION);
 
-    if (isset($input['v'])) {
-        echo 'Version: ' . $VERSION . PHP_EOL;
-        exit;
-    }
-
-    if (isset($input['i'])) {
-        echo 'Initialising new config file' . PHP_EOL;
-        if (copy($configFile, './config.php')) {
-            echo '+ config.php' . PHP_EOL;
-        }else {
-            throw new Exception('Unable to create config file, likely due to permissions. Copy the following contents into a config.php file manually:' . PHP_EOL . PHP_EOL . file_get_contents($configFile));
-        }
-        exit;
-    }
+    $dirToScan = realpath($path);
+    $displayProcessorClass = $config->get('display_processor');
+    $displayProcessor = new $displayProcessorClass();
+    $displayProcessor->inputSummary($path, $severities, $config->path, $dirToScan);
 
     if (! $path) {
         throw new Exception('A path must be provided (-d=<path>) to scan for files.');
     }
 
-    if (! is_file($configFile)) {
+    if (! is_file($config->path)) {
         throw new Exception("Config file path '{$input['c']}' is not recognised as a valid file path.");
     }
 
-    $config = new Entities\Config(include $configFile);
-    $dirToScan = realpath($path);
-    $displayProcessorClass = $config->get('display_processor');
-    $displayProcessor = new $displayProcessorClass();
-    $displayProcessor->inputSummary($path, $severities, $configFile, $dirToScan);
     $severities = explode(',' , $severities);
 
     if (! $dirToScan || ! is_dir($dirToScan)) {

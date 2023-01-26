@@ -38,8 +38,13 @@ Feature: testing
     Scenario: 3rd Testing something in the feature
         Given I am on the login page
         And I fill in the credentials
-        And I submit the details "https://lahsjdhfladh"
-        Then I should whatever
+        And they submit the details "https://lahsjdhfladh" and "form#username" and "form input.password"
+        And they submit the details "whatever"
+        And they submit the details "a good set of words.What about this now?"
+        And they submit the details "#username"
+        And they submit the details "//html/div/abc"
+        And they submit the details "//*/div/abc"
+        Then he should whatever
 
     @dev
     Scenario: 4th

@@ -12,10 +12,24 @@ class Step {
 
     public function getStepDefinition() {
         // Remove keyword and space.
-        $filtered = trim(preg_replace('/(given|when|then|and|but)/i', '', $this->title));
+        $filtered = trim(preg_replace('/^#?\s*(given|when|then|and|but)/i', '', $this->trimmedTitle));
 
         // Remove params.
         return preg_replace(['/\d+/i', '/".*"/is'], ['<num>', '<string>'], $filtered);
+    }
+
+    public function getParameters($quote = '"') {
+        $pattern = "/$quote([^$quote]*)$quote/";
+        preg_match_all($pattern, $this->trimmedTitle, $matches);
+
+        return $matches[1];
+    }
+
+    public function getKeyword(): string {
+        $match =[];
+        preg_match('/^#?\s*(given|when|then|and|but)/i', $this->trimmedTitle, $match);
+
+        return strtolower($match[0]);
     }
 
     public function isActive(): bool {

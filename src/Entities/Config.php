@@ -3,7 +3,8 @@
 namespace Forceedge01\BDDStaticAnalyser\Entities;
 
 class Config {
-    public function __construct(array $config) {
+    public function __construct(array $config, string $path) {
+        $this->path = $path;
         $this->data = $config;
     }
 

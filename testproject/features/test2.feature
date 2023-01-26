@@ -12,6 +12,6 @@ Feature: Another
     @wip
     Scenario: 6th Testing something in the feature
         Given I am on the login page
-        And I fill in the credentials
+        And they submit the details "form#username" and "form input.password"
         And I submit the details
         Then I should whatever "http://ahlsjkdfhalsdhf jashldf hajkshd flkahs dfjhal ksdjhf "

@@ -63,7 +63,19 @@ class Scenario {
             }
         }
 
-        return $stepObjects;
+        return array_values($stepObjects);
+    }
+
+    public function getActiveSteps() {
+        $steps = $this->getSteps();
+
+        foreach ($steps as $index => $step) {
+            if (! $step->isActive()) {
+                unset($steps[$index]);
+            }
+        }
+
+        return array_values($steps);
     }
 
     public function isStepDefinition(string $step): bool {
