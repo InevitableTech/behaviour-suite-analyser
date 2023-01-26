@@ -8,6 +8,7 @@ class Step {
         $this->title = $title;
         $this->trimmedTitle = trim($title);
         $this->table = $table;
+        $this->parameters = $this->extractParameters();
     }
 
     public function getStepDefinition() {
@@ -18,7 +19,11 @@ class Step {
         return preg_replace(['/\d+/i', '/".*"/is'], ['<num>', '<string>'], $filtered);
     }
 
-    public function getParameters($quote = '"') {
+    public function getParameters(): array {
+        return $this->parameters;
+    }
+
+    public function extractParameters($quote = '"') {
         $pattern = "/$quote([^$quote]*)$quote/";
         preg_match_all($pattern, $this->trimmedTitle, $matches);
 
