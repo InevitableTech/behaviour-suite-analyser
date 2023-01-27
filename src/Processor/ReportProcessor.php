@@ -65,7 +65,7 @@ class ReportProcessor implements ReportProcessorInterface {
         $html->openTag('div', 'row')
             ->openCloseTag("div,button onclick='resolve(\"${id}\")'", 'Resolved', 'right')
             ->openCloseTag("div,button onclick='unresolve(\"${id}\")'", 'Unresolved', 'right')
-            ->openCloseTag('a href="file://' . $outcome->file . '"', 'Line ' . $outcome->lineNumber . ': ' . $outcome->cleanStep)
+            ->openCloseTag('a href="file://' . $outcome->file . '"', 'Line ' . $outcome->lineNumber . ': ' . $outcome->cleanStep . ' ('. $outcome->getRuleShortName() .')')
         ->closeTag('div');
 
         if ($outcome->scenario) {

@@ -16,7 +16,7 @@ class Step {
         $filtered = trim(preg_replace('/^#?\s*(given|when|then|and|but)/i', '', $this->trimmedTitle));
 
         // Remove params.
-        return preg_replace(['/\d+/i', '/".*"/is'], ['<num>', '<string>'], $filtered);
+        return preg_replace(['/\d+/i', '/"([^"]*)"/is'], ['{num}', '"{string}"'], $filtered);
     }
 
     public function getParameters(): array {
