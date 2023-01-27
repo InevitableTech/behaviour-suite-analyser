@@ -19,13 +19,13 @@ class ReportProcessor implements ReportProcessorInterface {
         $items = ArrayProcessor::applySeveritiesFilter($collection->getItems(), $severities);
         $issuesToReport = count($items);
         $items = ArrayProcessor::sortByFile($items);
-        $items = ArrayProcessor::sortInternalArrayBy($items, 'severity', SORT_DESC);
+        $items = ArrayProcessor::sortInternalArrayBy($items, 'lineNumber', SORT_ASC);
 
         $this->html->openTag('html')
             ->openTag('head')
                 ->openCloseTag(
                     'style',
-                    'div.row, .outcome {display:block; width: 100%; float: left; padding: 10px;} .error { background: pink; border: 1px solid red;} .success {background: yellowgreen; border: 1px solid green; } .outcome {border: 1px dashed grey; margin-bottom: 5px;} .file {margin-top: 15px;} .right {float: right; display: inline-block;}'
+                    '.outcome {display:block; width: 100%; float: left;} div.row {padding: 10px; width: 99%; float: left;} .error { background: pink; border: 1px solid red;} .success {background: yellowgreen; border: 1px solid green; } .outcome {border: 1px dashed grey; margin-bottom: 5px;} .file {margin-top: 15px;} .right {float: right; display: inline-block;}'
                 )
                 ->openCloseTag(
                     'script',
@@ -65,15 +65,15 @@ class ReportProcessor implements ReportProcessorInterface {
         $html->openTag('div', 'row')
             ->openCloseTag("div,button onclick='resolve(\"${id}\")'", 'Resolved', 'right')
             ->openCloseTag("div,button onclick='unresolve(\"${id}\")'", 'Unresolved', 'right')
-            ->openCloseTag('a href="file://' . $outcome->file . '"', 'Line ' . $outcome->lineNumber . ': ' . $outcome->violatingLine)
+            ->openCloseTag('a href="file://' . $outcome->file . '"', 'Line ' . $outcome->lineNumber . ': ' . $outcome->cleanStep)
         ->closeTag('div');
 
         if ($outcome->scenario) {
             $html->openCloseTag('div', 'Scenario: ' . $outcome->scenario, 'row');
         }
 
-        if ($outcome->rawStep) {
-            $html->openCloseTag('div', 'Step: ' . $outcome->rawStep, 'row');
+        if ($outcome->violatingLine) {
+            $html->openCloseTag('div', 'Violating line: ' . $outcome->violatingLine, 'row');
         }
 
         $html->openCloseTag('div', 'Violation: ' . $outcome->message . ' (' . $outcome->severity . ')', 'row error violation');

@@ -18,12 +18,10 @@ class OnlyFirstPersonLanguageAllowed extends BaseRule {
 
             if (in_array($keyword, $this->keywords)) {
                 if (strpos($step->getStepDefinition(), 'I ') !== 0) {
-                    $collection->addOutcome($this->getOutcomeObject(
-                        $step->lineNumber,
+                    $collection->addOutcome($this->getStepOutcome(
+                        $step,
                         self::VIOLATION_MESSAGE,
-                        Entities\Outcome::MEDIUM,
-                        $step->trimmedTitle,
-                        $step->title
+                        Entities\Outcome::MEDIUM
                     ));
                 }
             }

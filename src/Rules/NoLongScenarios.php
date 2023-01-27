@@ -19,7 +19,8 @@ class NoLongScenarios extends BaseRule {
             $collection->addOutcome($this->getOutcomeObject(
                 $scenario->lineNumber,
                 self::VIOLATION_MESSAGE,
-                Entities\Outcome::CRITICAL
+                Entities\Outcome::CRITICAL,
+                $scenario->getTitle()
             ));
         }
     }

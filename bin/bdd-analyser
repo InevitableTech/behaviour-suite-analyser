@@ -14,12 +14,6 @@ use Forceedge01\BDDStaticAnalyser\Entities;
 include $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
 $VERSION = '0.1';
 
-function isFeatureFile($file) {
-	if (is_file($file) && has_extension($file, $feature_file_extension)) {
-		return true;
-	}
-}
-
 function getAllFeatureFiles(string $directory, string $feature_file_extension) {
     $files = scandir($directory);
     $features = [];
@@ -69,9 +63,15 @@ function handleOptions(array $input, $config, array $options, string $version) {
     }
 
     if (isset($input['r'])) {
-        echo 'Active Rules ';
+        echo 'Active Rules ' . count($config->get('rules')) . PHP_EOL;
         print_r($config->get('rules'));
         exit;
+    }
+}
+
+function printExitCode(Entities\OutcomeCollection $collection) {
+    if ($collection->getCount() > 0) {
+        exit(2);
     }
 }
 
@@ -146,7 +146,8 @@ try {
     $reportPath = $config->get('html_report_path');
     $reportPath = $reportProcessor->generate($reportPath, $severities, $outcomeCollection);
     $displayProcessor->printSummary($outcomeCollection, $reportPath);
+    printExitCode($outcomeCollection);
 } catch (\Exception $e) {
     echo '==> Error: ' . $e->getMessage() . PHP_EOL;
-    exit;
+    exit(1);
 }

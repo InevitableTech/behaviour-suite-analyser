@@ -103,6 +103,10 @@ class Scenario {
             return null;
         }
 
+        if ($this->getTags()) {
+            return trim(str_replace('Scenario:', '', $this->scenario[1]));
+        }
+
         return trim(str_replace('Scenario:', '', $this->scenario[0]));
     }
 

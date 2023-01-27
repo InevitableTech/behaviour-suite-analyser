@@ -15,7 +15,11 @@ class Collection {
         }
     }
 
-    public function getItems() {
+    public function getItems(): array {
         return $this->items;
+    }
+
+    public function getCount(): int {
+        return count($this->items);
     }
 }

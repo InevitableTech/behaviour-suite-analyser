@@ -26,7 +26,8 @@ class Outcome {
         string $severity,
         string $scenario = null,
         string $violatingLine = null,
-        string $rawStep = null
+        string $rawStep = null,
+        string $cleanStep = null
     ) {
         $this->rule = $rule;
         $this->file = $file;
@@ -36,6 +37,7 @@ class Outcome {
         $this->violatingLine = $violatingLine;
         $this->rawStep = $rawStep;
         $this->message = $message;
+        $this->cleanStep = $cleanStep;
         $this->uniqueScenarioId = $file . ':' . $lineNumber;
     }
 

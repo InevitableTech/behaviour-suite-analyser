@@ -32,12 +32,10 @@ class OnlyValidOrderAllowed extends BaseRule {
                     $current++;
                     continue;
                 } else {
-                    $collection->addOutcome($this->getOutcomeObject(
-                        $step->lineNumber,
+                    $collection->addOutcome($this->getStepOutcome(
+                        $step,
                         sprintf(self::VIOLATION_MESSAGE, $expected[$current], $keyword, $expected[$current]),
-                        Entities\Outcome::MEDIUM,
-                        $step->trimmedTitle,
-                        $step->title
+                        Entities\Outcome::MEDIUM
                     ));
                     break;
                 }
@@ -50,12 +48,10 @@ class OnlyValidOrderAllowed extends BaseRule {
             if ($keyword == $expected[$current]) {
                 $current++;
             } else {
-                $collection->addOutcome($this->getOutcomeObject(
-                    $step->lineNumber,
+                $collection->addOutcome($this->getStepOutcome(
+                    $step,
                     sprintf(self::VIOLATION_MESSAGE, $expected[$current], $keyword, $expected[$current]),
-                    Entities\Outcome::MEDIUM,
-                    $step->trimmedTitle,
-                    $step->title
+                    Entities\Outcome::MEDIUM
                 ));
                 break;
             }

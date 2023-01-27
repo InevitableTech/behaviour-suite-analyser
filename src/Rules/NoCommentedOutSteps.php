@@ -10,12 +10,10 @@ class NoCommentedOutSteps extends BaseRule {
 
     public function applyOnStep(Entities\Step $step, Entities\OutcomeCollection $collection) {
         if (!$step->isActive()) {
-            $collection->addOutcome($this->getOutcomeObject(
-                $step->lineNumber,
+            $collection->addOutcome($this->getStepOutcome(
+                $step,
                 self::VIOLATION_MESSAGE,
-                Entities\Outcome::MEDIUM,
-                $step->getStepDefinition(),
-                $step->trimmedTitle
+                Entities\Outcome::MEDIUM
             ));
         }
     }

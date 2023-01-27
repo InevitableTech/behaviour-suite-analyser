@@ -16,12 +16,10 @@ class NoSelectorsInSteps extends BaseRule {
 
         foreach ($params as $index => $param) {
             if ($this->isSelector($param)) {
-                $collection->addOutcome($this->getOutcomeObject(
-                    $step->lineNumber,
+                $collection->addOutcome($this->getStepOutcome(
+                    $step,
                     sprintf(self::VIOLATION_MESSAGE, $param),
-                    Entities\Outcome::SERIOUS,
-                    $step->getStepDefinition(),
-                    $step->trimmedTitle
+                    Entities\Outcome::SERIOUS
                 ));
             }
         }
@@ -39,7 +37,6 @@ class NoSelectorsInSteps extends BaseRule {
         // xpath selectors
         $xpathRegex = '/^\/(\/.*)+/';
         if (preg_match($xpathRegex, $param)) {
-            echo $param . PHP_EOL;
             return true;
         }
 

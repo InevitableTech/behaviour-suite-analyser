@@ -18,12 +18,10 @@ class NoUrlInSteps extends BaseRule {
         preg_match('/.*https?:\/\/.*/i', $step->title, $match);
 
         if (count($match) > 0) {
-            $collection->addOutcome($this->getOutcomeObject(
-                $step->lineNumber,
+            $collection->addOutcome($this->getStepOutcome(
+                $step,
                 self::VIOLATION_MESSAGE,
-                Entities\Outcome::HIGH,
-                $step->getStepDefinition(),
-                $step->trimmedTitle
+                Entities\Outcome::HIGH
             ));
         }
     }
