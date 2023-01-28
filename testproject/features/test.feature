@@ -22,6 +22,8 @@ Feature: testing
             | column 1  | column 2   |
             | abc       | askhdf     |
             | kjashdfjk | akdlsfhkja |
+            | kjashdfjk | akdlsfhkja |
+            | kjashdfjk | akdlsfhkja |
 
     Scenario: Any comments that are not steps should not be flagged
         # THis is a generic comment which should not be flagged by rule.

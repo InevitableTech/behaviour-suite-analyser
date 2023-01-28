@@ -7,7 +7,7 @@ use Forceedge01\BDDStaticAnalyser\Entities;
 class DiscouragedTags extends BaseRule {
     const VIOLATION_MESSAGE = 'Tag(s) "%s" are discouraged as they leave technical debt behind without any leading information. Instead raise issue in bug tracking system and tag the issue with the unique reference, therefor enabling the wider team to fix the issue.';
 
-    private $tags = ['@dev', '@wip', '@development', '@issue', '@broken', '@fix'];
+    private $tags = ['@dev', '@wip', '@development', '@broken', '@fix'];
 
     public function applyOnFeature(Entities\FeatureFileContents $contents, Entities\OutcomeCollection $collection) {
         $tags = $contents->feature->getTags();

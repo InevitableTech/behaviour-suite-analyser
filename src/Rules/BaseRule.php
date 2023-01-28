@@ -10,6 +10,12 @@ use Forceedge01\BDDStaticAnalyser\Entities\Step;
 use Forceedge01\BDDStaticAnalyser\Entities\FeatureFileContents;
 
 abstract class BaseRule implements RuleInterface {
+    protected $violationMessage = '';
+
+    protected $code = '';
+
+    protected $description = '';
+
     private $featureFileContents = null;
 
     private $scenario = null;
