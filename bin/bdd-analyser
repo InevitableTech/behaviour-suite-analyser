@@ -31,6 +31,16 @@ function getAllFeatureFiles(string $directory, string $feature_file_extension) {
     return $features;
 }
 
+function error($message, \Exception $e = null) {
+    echo '==> Error: ' . $message;
+
+    if ($e !== null) {
+        echo ' Exception: ' . $e->getMessage();
+    }
+
+    echo PHP_EOL;
+}
+
 function printExitCode(Entities\OutcomeCollection $collection) {
     if ($collection->getCount() > 0) {
         exit(2);
@@ -88,8 +98,17 @@ try {
         throw new Exception("No feature files found in path '$dirToScan'");
     }
 
+    if (isset($input['b'])) {
+        print_r($files);
+    }
+
     foreach ($files as $file) {
-        $fileContents = $featureFileProcessor->getFileContent($file);
+        try {
+            $fileContents = $featureFileProcessor->getFileContent($file);
+        } catch (Exception $e) {
+            error(sprintf('Unable to process feature file contents in file "%s".', $file), $e);
+            continue;
+        }
 
         if (isset($input['b'])) {
             print_r($fileContents);
@@ -110,6 +129,6 @@ try {
     $displayProcessor->printSummary($outcomeCollection, $reportPath);
     printExitCode($outcomeCollection);
 } catch (\Exception $e) {
-    echo '==> Error: ' . $e->getMessage() . PHP_EOL;
+    error($e->getMessage());
     exit(1);
 }

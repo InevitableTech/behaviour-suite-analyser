@@ -32,9 +32,53 @@ class ArrayProcessor {
         return $sorted;
     }
 
+    public static function cleanArray($array) {
+        return array_values(array_filter($array));
+    }
+
     private static function sortArray(string $column, array $items, $sortOrder): array {
         array_multisort(array_column($items, $column), $sortOrder, $items);
 
         return $items;
+    }
+
+    public static function getContentBetween(string $startRegex, string $endRegex, array $content): array {
+        $start = $end = null;
+        foreach ($content as $index => $line) {
+            // Starting line.
+            if (preg_match($startRegex, $line)) {
+                $start = $index;
+                continue;
+            }
+
+            if (preg_match($endRegex, $line)) {
+                $end = $index;
+                break;
+            }
+        }
+
+        // Return the content.
+        return array_slice($content, $start, $end - $start);
+    }
+
+    public static function getContentMatching(string $match, array $content): ?string {
+        $start = $end = null;
+        foreach ($content as $index => $line) {
+            if (preg_match($match, $line)) {
+                return $line;
+            }
+        }
+
+        return null;
+    }
+
+    public static function getIndexMatching(string $match, array $content): ?int {
+        foreach ($content as $index => $line) {
+            if (preg_match($match, $line)) {
+                return $index;
+            }
+        }
+
+        return null;
     }
 }

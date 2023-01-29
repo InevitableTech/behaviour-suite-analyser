@@ -93,6 +93,15 @@ abstract class BaseRule implements RuleInterface {
         );
     }
 
+    protected function getScenarioOutcome(Scenario $scenario, string $message, int $outcome) {
+        return $this->getOutcomeObject(
+            $scenario->lineNumber,
+            $message,
+            $outcome,
+            $scenario->getTitle()
+        );
+    }
+
     protected function getStepOutcome(Step $step, string $message, int $outcome) {
         return $this->getOutcomeObject(
             $step->lineNumber,

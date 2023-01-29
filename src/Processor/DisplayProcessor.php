@@ -89,7 +89,7 @@ class DisplayProcessor implements DisplayProcessorInterface {
         echo "   {$itemNumber}.| [Line: $outcome->lineNumber, Severity: $outcome->severity] - $outcome->message ({$outcome->getRuleShortName()})" . PHP_EOL;
 
         if ($outcome->violatingLine) {
-            echo "    $spaces| [Step] - $outcome->violatingLine" . PHP_EOL;
+            echo "    $spaces| [Violating line] - $outcome->violatingLine" . PHP_EOL;
         }
 
         echo PHP_EOL;

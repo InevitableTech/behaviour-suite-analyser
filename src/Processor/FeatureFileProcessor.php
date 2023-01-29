@@ -31,15 +31,37 @@ class FeatureFileProcessor {
 
     public function getFeature(array $contents): Entities\Feature {
         $feature = [];
+        $endOfFileIndex = count($contents)-1;
+        $tags = '';
+        $started = false;
+
+        // Feature declaration block
+        $featureDeclarationBlockIndex = ArrayProcessor::getIndexMatching('/^Feature:.*/s', $contents);
+
+        if ($featureDeclarationBlockIndex === null) {
+            throw new \Exception('Invalid feature file, no feature definition found in file.');
+        }
 
         foreach ($contents as $index => $line) {
-            if ($this->isBackgroundDeclaration($line) || $this->isScenarioDeclaration($line)) {
-                $feature = array_filter(array_slice($contents, 0, $index));
+            if ($this->isFeatureDeclaration($line)) {
+                $tags = $this->getTagsFromLineBefore($contents, $index);
+                $started = true;
+            } elseif (
+                $started && (
+                $this->isBackgroundDeclaration($line) ||
+                $this->isScenarioDeclaration($line) ||
+                $this->hasTags($line) ||
+                $endOfFileIndex === $index)
+            ) {
+                $feature = array_slice($contents, $featureDeclarationBlockIndex, $index - $featureDeclarationBlockIndex);
+                if ($tags) {
+                    array_unshift($feature, implode(' ', $tags));
+                }
                 break;
             }
         }
 
-        return new Entities\Feature(array_values($feature));
+        return new Entities\Feature(ArrayProcessor::cleanArray($feature));
     }
 
     public function getBackground(array $contents): ?Entities\Background {
@@ -60,7 +82,7 @@ class FeatureFileProcessor {
                     return null;
                 }
 
-                $background = array_filter(array_slice($contents, $start, $end - $start));
+                $background = ArrayProcessor::cleanArray(array_slice($contents, $start, $end - $start));
 
                 // Remove tags which belong to the next declaration block.
                 $lastStep = end($background);
@@ -83,15 +105,20 @@ class FeatureFileProcessor {
         $start = false;
         $startingIndex = 0;
         $endOfFileIndex = count($contents)-1;
+        $found = false;
 
         foreach ($contents as $index => $line) {
             if ($this->isScenarioDeclaration($line)) {
+                $found = true;
+                // If this is the start of the scenario encountered, don't process it yet, wait until it finishes and another starts.
                 if ($start === true) {
-                    $scenarioContent = array_filter(array_slice($contents, $startingIndex, $index - $startingIndex));
+                    // Extract scenario content.
+                    $scenarioContent = ArrayProcessor::cleanArray(array_slice($contents, $startingIndex, $index - $startingIndex));
 
                     // Add scenario tags to scenario.
-                    $tags = $this->getTags($contents, $startingIndex);
+                    $tags = $this->getTagsFromLineBefore($contents, $startingIndex);
 
+                    // Add tags if they exist to the scenario content.
                     if ($tags) {
                         array_unshift($scenarioContent, implode(' ', $tags));
                     }
@@ -118,9 +145,11 @@ class FeatureFileProcessor {
                 }
             }
 
-            if ($endOfFileIndex === $index) {
-                $scenarioContent= array_filter(array_slice($contents, $startingIndex, $index - ($startingIndex-1)));
-                $tags = $this->getTags($contents, $startingIndex);
+            // If we've made it to the end of the file and a scenario block was found before, assume the
+            // rest of the content to be scenario content.
+            if ($endOfFileIndex === $index && $found) {
+                $scenarioContent= ArrayProcessor::cleanArray(array_slice($contents, $startingIndex, $index - ($startingIndex-1)));
+                $tags = $this->getTagsFromLineBefore($contents, $startingIndex);
 
                 if ($tags) {
                     array_unshift($scenarioContent, implode(' ', $tags));
@@ -149,7 +178,15 @@ class FeatureFileProcessor {
         return (bool) preg_match('/^Background:.*/s', trim($line));
     }
 
-    private function getTags(array $contents, $index): array {
+    private function isFeatureDeclaration(string $line): bool {
+        return (bool) preg_match('/^Feature:.*/s', trim($line));
+    }
+
+    private function getTagsFromLineBefore(array $contents, $index): array {
+        if (! isset($contents[$index - 1])) {
+            return [];
+        }
+
         if (preg_match('/^@.*/', trim($contents[$index-1]), $matches)) {
             return $matches;
         }

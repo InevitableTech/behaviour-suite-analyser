@@ -18,6 +18,9 @@ class Outcome {
     // Architectural issues.
     const CRITICAL = 4;
 
+    // Debug issues.
+    const DEV = 99;
+
     public function __construct(
         string $rule,
         string $file,

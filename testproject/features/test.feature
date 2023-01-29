@@ -1,5 +1,5 @@
 @dev @test-123
-Feature: testing
+Feature: LONG FILE
     In order to test the behaviour analyser
     As the creator of the analyser
     I want to run it against this feature
@@ -53,7 +53,9 @@ Feature: testing
         Given I am on the login page
         And I fill in the credentials
         And I submit the details
-        Then I should whatever
+
+    @dev
+    Scenario: 
         Given I am on the login page
         And I fill in the credentials
         And I submit the details
@@ -66,3 +68,12 @@ Feature: testing
         And I fill in the credentials
         And I submit the details
         Then I should whatever
+        Given I am on the login page
+        And I fill in the credentials
+        And I submit the details
+        Then I should whatever
+
+    Scenario: 4th
+        Given I am on the login page
+        And I fill in the credentials
+        And I submit the details

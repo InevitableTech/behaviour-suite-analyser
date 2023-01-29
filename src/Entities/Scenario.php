@@ -98,9 +98,9 @@ class Scenario {
         return $examples;
     }
 
-    public function getTitle(): ?string {
+    public function getTitle(): string {
         if (! $this->scenario) {
-            return null;
+            return '';
         }
 
         if ($this->getTags()) {

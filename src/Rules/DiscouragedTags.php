@@ -18,7 +18,7 @@ class DiscouragedTags extends BaseRule {
                 1,
                 sprintf(self::VIOLATION_MESSAGE, implode(', ', $intersect)),
                 Entities\Outcome::HIGH,
-                $contents->feature->narrative[0]
+                implode(' ', $contents->feature->getTags())
             ));
         }
     }
