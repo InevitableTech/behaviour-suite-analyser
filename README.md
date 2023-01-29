@@ -44,13 +44,24 @@ Adding new rules is as simple as creating a new class and extending it from the 
 
 ```php
 
-namespace Forceedge01\BDDStaticAnalyser\Rules;
+namespace MyApp\BddScriptRules;
 
 use Forceedge01\BDDStaticAnalyser\Entities;
+use Forceedge01\BDDStaticAnalyser\Rules;
 
-class MyRule extends BaseRule {
+class MyRule extends Rules\BaseRule {
 
 }
 ```
 
 Then simply add your new class to the config.php rules array.
+
+```php
+    ...
+    'rules' => [
+        ...
+        MyApp\BddScriptRules\MyRule::class => null,
+        ...
+    ]
+    ...
+```
