@@ -6,7 +6,7 @@ Detailed setup blog post https://inevitabletech.uk/blog/static-analysis-for-your
 Quick Installation:
 
 ```
-composer global require forceedge01/bdd-analyser --dev
+composer global require forceedge01/bdd-analyser
 ```
 
 Copy config.php file to root of project, setup includes the kind of files you want to scan and the rules you want applied.
