@@ -1,3 +1,10 @@
+Description
+====
+
+Perform static analysis on your cucumber/gherkin styles bdd scripts and remediate issues that will prolong the life your test suite.
+
+This tool is meant to be language agnostic (even though written in PHP) and expected to work with any cucumber/gherkin style files.
+
 Install
 ====
 
@@ -20,6 +27,11 @@ bdd-analyser -d=features/ -c=config.php
 
 The above command will scan the features folder.
 
+Configure the config.php file with the extension of the files that contain the cucumber/gherkin scripts.
+
+```php
+    'feature_file_extension' => 'feature',
+```
 
 Development
 -----
