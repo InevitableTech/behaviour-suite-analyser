@@ -2,6 +2,8 @@
 
 namespace Forceedge01\BDDStaticAnalyser\Entities;
 
+use Forceedge01\BDDStaticAnalyser\Processor;
+
 class Scenario {
     public function __construct(int $lineNumber, array $scenario, bool $active = true) {
         $this->lineNumber = $lineNumber;
@@ -15,7 +17,8 @@ class Scenario {
             return null;
         }
 
-        $steps = array_slice($this->scenario, 1, count($this->scenario));
+        $steps = $this->removeTagsAndScenarioFromSteps();
+
         $stepObjects = [];
         $table = [];
         $tableStepIndex = false;
@@ -31,16 +34,16 @@ class Scenario {
             }
 
             // If we detect the step will have a table
-            if (substr($trimmedStep, -1) === ':' && $trimmedStep != 'Examples:') {
+            if (!$this->isExampleBlock($trimmedStep) && $this->isTabledStep($trimmedStep)) {
                 $tableStepIndex = $index;
                 $tableStep = $step;
                 continue;
             }
 
-            if (strpos($trimmedStep, '|') === 0) {
+            if ($this->isTableBlock($trimmedStep)) {
                 // Step table.
                 $table[] = $step;
-            } else if ($trimmedStep === 'Examples:' || $trimmedStep === '') {
+            } else if ($this->isExampleBlock($trimmedStep) || $trimmedStep === '') {
                 // Examples statement to be skipped, not considered a step.
                 continue;
             } else {
@@ -63,7 +66,33 @@ class Scenario {
             }
         }
 
-        return array_values($stepObjects);
+        return Processor\ArrayProcessor::cleanArray($stepObjects);
+    }
+
+    private function isExampleBlock($line): bool {
+        return $line === 'Examples:';
+    }
+
+    private function isTabledStep($line): bool {
+        return substr($line, -1) === ':';
+    }
+
+    private function isTableBlock($line): bool {
+        return strpos($line, '|') === 0;
+    }
+
+    public function removeTagsAndScenarioFromSteps(): array {
+        $tags = $this->getTags();
+        $scenario = $this->scenario;
+
+        // Check if we have tags, is so strip them out.
+        if ($tags) {
+            unset($scenario[0]);
+            $scenarios = array_values($scenario);
+        }
+
+        // Remove first line that says scenario:.
+        return array_slice($scenario, 1, count($scenario));
     }
 
     public function getActiveSteps() {
@@ -75,7 +104,7 @@ class Scenario {
             }
         }
 
-        return array_values($steps);
+        return Processor\ArrayProcessor::cleanArray($steps);
     }
 
     public function isStepDefinition(string $step): bool {
@@ -95,7 +124,7 @@ class Scenario {
             }
         }
 
-        return $examples;
+        return Processor\ArrayProcessor::cleanArray($examples);
     }
 
     public function getTitle(): string {
@@ -115,7 +144,7 @@ class Scenario {
     }
 
     public function getTags(): array {
-        preg_match('/^@.*/', $this->scenario[0], $matches);
+        preg_match('/^@.*/', trim($this->scenario[0]), $matches);
         if (count($matches) > 0) {
             return explode(' ', $this->scenario[0]);
         }

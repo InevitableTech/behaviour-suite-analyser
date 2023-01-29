@@ -36,6 +36,10 @@ class ArrayProcessor {
         return array_values(array_filter($array));
     }
 
+    public static function reIndexArray($array) {
+        return array_values($array);
+    }
+
     private static function sortArray(string $column, array $items, $sortOrder): array {
         array_multisort(array_column($items, $column), $sortOrder, $items);
 

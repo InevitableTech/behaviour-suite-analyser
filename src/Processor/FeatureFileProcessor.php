@@ -61,7 +61,7 @@ class FeatureFileProcessor {
             }
         }
 
-        return new Entities\Feature(ArrayProcessor::cleanArray($feature));
+        return new Entities\Feature(ArrayProcessor::reIndexArray($feature));
     }
 
     public function getBackground(array $contents): ?Entities\Background {
@@ -82,7 +82,7 @@ class FeatureFileProcessor {
                     return null;
                 }
 
-                $background = ArrayProcessor::cleanArray(array_slice($contents, $start, $end - $start));
+                $background = ArrayProcessor::reIndexArray(array_slice($contents, $start, $end - $start));
 
                 // Remove tags which belong to the next declaration block.
                 $lastStep = end($background);
@@ -113,7 +113,7 @@ class FeatureFileProcessor {
                 // If this is the start of the scenario encountered, don't process it yet, wait until it finishes and another starts.
                 if ($start === true) {
                     // Extract scenario content.
-                    $scenarioContent = ArrayProcessor::cleanArray(array_slice($contents, $startingIndex, $index - $startingIndex));
+                    $scenarioContent = ArrayProcessor::reIndexArray(array_slice($contents, $startingIndex, $index - $startingIndex));
 
                     // Add scenario tags to scenario.
                     $tags = $this->getTagsFromLineBefore($contents, $startingIndex);
@@ -148,7 +148,7 @@ class FeatureFileProcessor {
             // If we've made it to the end of the file and a scenario block was found before, assume the
             // rest of the content to be scenario content.
             if ($endOfFileIndex === $index && $found) {
-                $scenarioContent= ArrayProcessor::cleanArray(array_slice($contents, $startingIndex, $index - ($startingIndex-1)));
+                $scenarioContent= ArrayProcessor::reIndexArray(array_slice($contents, $startingIndex, $index - ($startingIndex-1)));
                 $tags = $this->getTagsFromLineBefore($contents, $startingIndex);
 
                 if ($tags) {
