@@ -3,7 +3,7 @@ Description
 
 Perform static analysis on your cucumber/gherkin styles bdd scripts and remediate issues that will prolong the life your test suite.
 
-This tool is meant to be language agnostic (even though written in PHP) and expected to work with any cucumber/gherkin style files.
+This tool is meant to be language agnostic (even though written in PHP7) and expected to work with any cucumber/gherkin style files.
 
 Install
 ====
