@@ -19,6 +19,11 @@ class Initialise extends Command {
     public function execute(InputInterface $input, OutputInterface $output) {
         try {
             $output->writeln('Initialising new config file');
+
+            if (is_file('.' . DIRECTORY_SEPARATOR . Entities\Config::DEFAULT_NAME)) {
+                throw new \Exception('A config file by the name of "' . Entities\Config::DEFAULT_NAME . '" already exists in this folder.');
+            }
+
             if (copy(
                 Entities\Config::DEFAULT_PATH . Entities\Config::DEFAULT_NAME,
                 '.' . DIRECTORY_SEPARATOR . Entities\Config::DEFAULT_NAME

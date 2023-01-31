@@ -64,7 +64,7 @@ class DisplayProcessor implements DisplayProcessorInterface {
         $length = strlen((string) $itemNumber);
         $spaces = str_repeat(' ', $length);
 
-        $output->writeln("   {$itemNumber}.| [Line: $outcome->lineNumber, Severity: $outcome->severity] - $outcome->message (<info>{$outcome->getRuleShortName()}</info>)");
+        $output->writeln("   {$itemNumber}.| [Line: <comment>$outcome->lineNumber</comment>, Severity: $outcome->severity] - $outcome->message (<info>{$outcome->getRuleShortName()}</info>)");
 
         if ($outcome->violatingLine) {
             $output->writeln("    $spaces| [Violating line] - <comment>$outcome->violatingLine</comment>");

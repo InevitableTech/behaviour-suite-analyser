@@ -26,15 +26,11 @@ class Scan extends Command {
         try {
             $path = $input->getArgument('directory');
             $severities = $input->getOption('severities');
-            $configFile = realpath($input->getOption('config'));
+            $configFile = $input->getOption('config');
             $debug = $input->getOption('debug');
             $displayRules = $input->getOption('rules');
 
-            if (is_dir($configFile)) {
-                $configFile .= DIRECTORY_SEPARATOR . Entities\Config::DEFAULT_NAME;
-            }
-
-            $config = new Entities\Config(include $configFile, $configFile);
+            $config = new Entities\Config($configFile);
 
             if ($displayRules) {
                 $output->writeln('Active rules: ' . print_r($config->get('rules'), true));
@@ -49,10 +45,6 @@ class Scan extends Command {
 
             if (! $path) {
                 throw new Exception('A path must be provided (-d=<path>) to scan for files.');
-            }
-
-            if (! is_file($config->path)) {
-                throw new Exception("Config file path '{$path}' is not recognised as a valid file path.");
             }
 
             $severities = explode(',' , $severities);
@@ -104,7 +96,7 @@ class Scan extends Command {
                 return self::FAILURE;
             }
         } catch (Exception $e) {
-            error($e->getMessage());
+            $this->error($output, $e->getMessage());
             return self::FAILURE;
         }
 
