@@ -13,7 +13,7 @@ use Forceedge01\BDDStaticAnalyser\Entities;
 class Initialise extends Command {
     public function configure() {
         $this->setName('initialise');
-        $this->setDescription('Initiliase a local config file.');
+        $this->setDescription('Initiliase a local config file');
     }
 
     public function execute(InputInterface $input, OutputInterface $output) {
