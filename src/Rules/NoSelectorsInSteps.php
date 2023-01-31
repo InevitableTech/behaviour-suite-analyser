@@ -5,7 +5,7 @@ namespace Forceedge01\BDDStaticAnalyser\Rules;
 use Forceedge01\BDDStaticAnalyser\Entities;
 
 class NoSelectorsInSteps extends BaseRule {
-    const VIOLATION_MESSAGE = 'Found css/xpath selector "%s" which impact readability and re-usability of steps and make maintenance considerably hard. Consider abstracting these in the library and giving them a meaningful name.';
+    protected $violationMessage = 'Found css/xpath selector "%s" which impact readability and re-usability of steps and make maintenance considerably hard. Consider abstracting these in the library and giving them a meaningful name.';
 
     public function applyOnStep(Entities\Step $step, Entities\OutcomeCollection $collection) {
         $params = $step->getParameters();
@@ -18,7 +18,7 @@ class NoSelectorsInSteps extends BaseRule {
             if ($this->isSelector($param)) {
                 $collection->addOutcome($this->getStepOutcome(
                     $step,
-                    sprintf(self::VIOLATION_MESSAGE, $param),
+                    sprintf($this->violationMessage, $param),
                     Entities\Outcome::SERIOUS
                 ));
             }

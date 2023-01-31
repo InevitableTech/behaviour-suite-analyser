@@ -5,7 +5,7 @@ namespace Forceedge01\BDDStaticAnalyser\Rules;
 use Forceedge01\BDDStaticAnalyser\Entities;
 
 class DiscouragedTags extends BaseRule {
-    const VIOLATION_MESSAGE = 'Tag(s) "%s" are discouraged as they leave technical debt behind without any leading information. Instead raise issue in bug tracking system and tag the issue with the unique reference, therefor enabling the wider team to fix the issue.';
+    protected $violationMessage = 'Tag(s) "%s" are discouraged as they leave technical debt behind without any leading information. Instead raise issue in bug tracking system and tag the issue with the unique reference, therefor enabling the wider team to fix the issue.';
 
     private $tags = ['@dev', '@wip', '@development', '@broken', '@fix'];
 
@@ -16,7 +16,7 @@ class DiscouragedTags extends BaseRule {
         if ($intersect) {
             $collection->addOutcome($this->getOutcomeObject(
                 1,
-                sprintf(self::VIOLATION_MESSAGE, implode(', ', $intersect)),
+                sprintf($this->violationMessage, implode(', ', $intersect)),
                 Entities\Outcome::HIGH,
                 implode(' ', $contents->feature->getTags())
             ));
@@ -30,7 +30,7 @@ class DiscouragedTags extends BaseRule {
         if ($intersect) {
             $collection->addOutcome($this->getOutcomeObject(
                 $scenario->lineNumber,
-                sprintf(self::VIOLATION_MESSAGE, implode(', ', $intersect)),
+                sprintf($this->violationMessage, implode(', ', $intersect)),
                 Entities\Outcome::HIGH,
                 $scenario->scenario[0]
             ));

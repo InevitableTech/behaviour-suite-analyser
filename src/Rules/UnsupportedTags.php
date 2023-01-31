@@ -5,7 +5,7 @@ namespace Forceedge01\BDDStaticAnalyser\Rules;
 use Forceedge01\BDDStaticAnalyser\Entities;
 
 class UnsupportedTags extends BaseRule {
-    const VIOLATION_MESSAGE = 'Unsupported tag(s) "%s" found.';
+    protected $violationMessage = 'Unsupported tag(s) "%s" found.';
 
     public function __construct(array $tags) {
         $this->tags = $tags;
@@ -18,7 +18,7 @@ class UnsupportedTags extends BaseRule {
         if ($intersect) {
             $collection->addOutcome($this->getOutcomeObject(
                 1,
-                sprintf(self::VIOLATION_MESSAGE, implode(', ', $intersect)),
+                sprintf($this->violationMessage, implode(', ', $intersect)),
                 Entities\Outcome::MEDIUM,
                 $contents->feature->narrative[0]
             ));
@@ -32,7 +32,7 @@ class UnsupportedTags extends BaseRule {
         if ($intersect) {
             $collection->addOutcome($this->getOutcomeObject(
                 $scenario->lineNumber,
-                sprintf(self::VIOLATION_MESSAGE, implode(', ', $intersect)),
+                sprintf($this->violationMessage, implode(', ', $intersect)),
                 Entities\Outcome::MEDIUM,
                 $scenario->scenario[0]
             ));

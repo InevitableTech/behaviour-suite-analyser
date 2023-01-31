@@ -5,7 +5,7 @@ namespace Forceedge01\BDDStaticAnalyser\Rules;
 use Forceedge01\BDDStaticAnalyser\Entities;
 
 class OnlyFirstPersonLanguageAllowed extends BaseRule {
-    const VIOLATION_MESSAGE = 'Steps should be written in first person pov only. This makes the scenario more relatable to yourself and encourages you to put yourself into the users position when writing or reading the scenario.';
+    protected $violationMessage = 'Steps should be written in first person pov only. This makes the scenario more relatable to yourself and encourages you to put yourself into the users position when writing or reading the scenario.';
 
     public function __construct(array $keywords = ['given', 'when', 'then', 'and', 'but']) {
         $this->keywords = $keywords;
@@ -20,7 +20,7 @@ class OnlyFirstPersonLanguageAllowed extends BaseRule {
                 if (strpos($step->getStepDefinition(), 'I ') !== 0) {
                     $collection->addOutcome($this->getStepOutcome(
                         $step,
-                        self::VIOLATION_MESSAGE,
+                        $this->violationMessage,
                         Entities\Outcome::MEDIUM
                     ));
                 }
