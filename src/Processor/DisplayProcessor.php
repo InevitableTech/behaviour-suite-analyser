@@ -3,67 +3,89 @@
 namespace Forceedge01\BDDStaticAnalyser\Processor;
 
 use Forceedge01\BDDStaticAnalyser\Entities;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class DisplayProcessor implements DisplayProcessorInterface {
+    public function setOutput(OutputInterface $output) {
+        $this->output = $output;
+    }
+
+    public function inputSummary(string $path, string $severities, string $configPath, string $dirToScan) {
+        $this->output->writeln('<info>Input summary');
+        $this->output->writeln('----</info>');
+
+        $this->output->writeln('Scan path: ' . $path . "($dirToScan)");
+        $this->output->writeln('Severities to display: ' . $severities);
+        $this->output->writeln('Config path: ' . $configPath . PHP_EOL);
+    }
+
     public function displayOutcomes(Entities\OutcomeCollection $outcomes, array $severities) {
         $items = ArrayProcessor::applySeveritiesFilter($outcomes->getItems(), $severities);
         $items = ArrayProcessor::sortByFile($items);
         $items = ArrayProcessor::sortInternalArrayBy($items, 'lineNumber', SORT_ASC);
 
-        echo 'Outcomes' . PHP_EOL;
-        echo '----' . PHP_EOL;
+        $this->output->writeln('<info>Outcomes');
+        $this->output->writeln('----</info>');
 
         foreach ($items as $file => $outcomeCollection) {
             $violationsCount = count($outcomeCollection);
-            echo PHP_EOL . "-- $file: ($violationsCount Violations)" . PHP_EOL . PHP_EOL;
+            $this->output->writeln(PHP_EOL . "<comment>-- $file</comment>: (<error>$violationsCount Violations</error>)" . PHP_EOL);
             foreach ($outcomeCollection as $index => $outcome) {
-                $this->displaySingleOutcomeSummary($index + 1, $outcome);
+                $this->displaySingleOutcomeSummary($index + 1, $outcome, $this->output);
             }
         }
     }
 
-    public function inputSummary(string $path, string $severities, string $configPath, string $dirToScan) {
-        echo 'Input summary' . PHP_EOL;
-        echo '----' . PHP_EOL;
-        echo 'Scan path: ' . $path . "($dirToScan)" . PHP_EOL;
-        echo 'Severities to display: ' . $severities . PHP_EOL;
-        echo 'Config path: ' . $configPath . PHP_EOL . PHP_EOL;
-    }
-
     public function printSummary(Entities\OutcomeCollection $outcomes, string $reportPath) {
         $violationsCount = count($outcomes->getItems());
-        echo PHP_EOL;
-        echo 'Summary' . PHP_EOL;
-        echo '----' . PHP_EOL;
-        echo 'Violations: ' . $violationsCount . ', ';
-        echo "files: {$outcomes->summary['files']}, ";
-        echo "backgrounds: {$outcomes->getSummaryCount('backgrounds')}, ";
-        echo "scenarios: {$outcomes->getSummaryCount('scenarios')}, ";
-        echo "activeSteps: {$outcomes->getSummaryCount('activeSteps')}, ";
-        echo "activeRules: {$outcomes->getSummaryCount('activeRules')}." . PHP_EOL;
-        echo 'Html report generated: file://' . realpath($reportPath) . PHP_EOL . PHP_EOL;
+        $violationsByRule = $this->getViolationsByRule($outcomes);
+
+        $this->output->write(PHP_EOL);
+        $this->output->writeln('<info>Summary');
+        $this->output->writeln('----</info>');
+
+        $this->output->writeln(
+            'Violations: <error>' . $violationsCount . '</error>, ' .
+            "files: {$outcomes->summary['files']}, " .
+            "backgrounds: {$outcomes->getSummaryCount('backgrounds')}, " .
+            "scenarios: {$outcomes->getSummaryCount('scenarios')}, " .
+            "activeSteps: {$outcomes->getSummaryCount('activeSteps')}, " .
+            "activeRules: {$outcomes->getSummaryCount('activeRules')}"
+        );
+
+        $this->output->writeln(
+            'Most violated rules: ' . ArrayProcessor::implodeWithKeys(array_slice($violationsByRule, 0, 3), ': ', ', ')
+        );
+
+        $this->output->writeln('Html report generated: <comment>file://' . realpath($reportPath) . '</comment>' . PHP_EOL);
     }
 
-    public function helpMenu(array $options, Entities\Config $config) {
-        echo 'Help menu' . PHP_EOL;
-        echo '----' . PHP_EOL;
-        foreach ($options as $option => $description) {
-            echo '-' . rtrim($option,':') . '     ' . $description . PHP_EOL;
-        }
-
-        echo PHP_EOL;
-    }
-
-    private function displaySingleOutcomeSummary(int $itemNumber, Entities\Outcome $outcome) {
+    private function displaySingleOutcomeSummary(int $itemNumber, Entities\Outcome $outcome, OutputInterface $output) {
         $length = strlen((string) $itemNumber);
         $spaces = str_repeat(' ', $length);
 
-        echo "   {$itemNumber}.| [Line: $outcome->lineNumber, Severity: $outcome->severity] - $outcome->message ({$outcome->getRuleShortName()})" . PHP_EOL;
+        $output->writeln("   {$itemNumber}.| [Line: $outcome->lineNumber, Severity: $outcome->severity] - $outcome->message (<info>{$outcome->getRuleShortName()}</info>)");
 
         if ($outcome->violatingLine) {
-            echo "    $spaces| [Violating line] - $outcome->violatingLine" . PHP_EOL;
+            $output->writeln("    $spaces| [Violating line] - <comment>$outcome->violatingLine</comment>");
         }
 
-        echo PHP_EOL;
+        $output->write(PHP_EOL);
+    }
+
+    private function getViolationsByRule(Entities\OutcomeCollection $collection): array {
+        $counts = [];
+        foreach ($collection->getItems() as $outcome) {
+            if (!isset($counts[$outcome->getRuleShortName()])) {
+                $counts[$outcome->getRuleShortName()] = 1;
+                continue;
+            }
+
+            $counts[$outcome->getRuleShortName()] += 1;
+        }
+
+        asort($counts);
+
+        return array_reverse($counts);
     }
 }

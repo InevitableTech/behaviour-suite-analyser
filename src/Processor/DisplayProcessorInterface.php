@@ -3,6 +3,7 @@
 namespace Forceedge01\BDDStaticAnalyser\Processor;
 
 use Forceedge01\BDDStaticAnalyser\Entities;
+use Symfony\Component\Console\Output\OutputInterface;
 
 interface DisplayProcessorInterface {
     public function displayOutcomes(Entities\OutcomeCollection $outcomes, array $severities);

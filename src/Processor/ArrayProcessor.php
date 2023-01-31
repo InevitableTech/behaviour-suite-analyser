@@ -25,8 +25,8 @@ class ArrayProcessor {
 
     public static function sortInternalArrayBy(array $sorted, string $column, int $order) {
         // Sort by severity, lineNumber
-        foreach ($sorted as $file => $items) {
-            $sorted[$file] = self::sortArray($column, $items, $order);
+        foreach ($sorted as $index => $items) {
+            $sorted[$index] = self::sortArray($column, $items, $order);
         }
 
         return $sorted;
@@ -84,5 +84,14 @@ class ArrayProcessor {
         }
 
         return null;
+    }
+
+    public static function implodeWithKeys(array $array, string $glueChar, string $separatorChar): string {
+        $string = '';
+        foreach ($array as $index => $item) {
+            $string .= "{$index}{$glueChar}{$item}{$separatorChar}";
+        }
+
+        return trim($string, $separatorChar);
     }
 }

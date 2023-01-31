@@ -31,7 +31,7 @@ class Initialise extends Command {
                 );
             }
         } catch (Exception $e) {
-            $output->writeln($e->getMessage());
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
             return self::FAILURE;
         }
 

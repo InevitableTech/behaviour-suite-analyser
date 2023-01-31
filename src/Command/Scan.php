@@ -26,9 +26,13 @@ class Scan extends Command {
         try {
             $path = $input->getArgument('directory');
             $severities = $input->getOption('severities');
-            $configFile = $input->getOption('config');
+            $configFile = realpath($input->getOption('config'));
             $debug = $input->getOption('debug');
             $displayRules = $input->getOption('rules');
+
+            if (is_dir($configFile)) {
+                $configFile .= DIRECTORY_SEPARATOR . Entities\Config::DEFAULT_NAME;
+            }
 
             $config = new Entities\Config(include $configFile, $configFile);
 
@@ -39,6 +43,7 @@ class Scan extends Command {
 
             $displayProcessorClass = $config->get('display_processor');
             $displayProcessor = new $displayProcessorClass();
+            $displayProcessor->setOutput($output);
             $dirToScan = realpath($path);
             $displayProcessor->inputSummary($path, $severities, $config->path, $dirToScan);
 
@@ -107,12 +112,12 @@ class Scan extends Command {
     }
 
     private function error($output, $message, \Exception $e = null) {
-        $output->write('==> Error: ' . $message);
+        $output->write('<error>==> Error: ' . $message);
 
         if ($e !== null) {
             $output->write(' Exception: ' . $e->getMessage());
         }
 
-        $output->write(PHP_EOL);
+        $output->writeln('</error>' . PHP_EOL);
     }
 }
