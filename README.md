@@ -5,6 +5,10 @@ Perform static analysis on your cucumber/gherkin styles bdd scripts and remediat
 
 This tool is meant to be language agnostic (even though written in PHP7) and expected to work with any cucumber/gherkin style files.
 
+Here is an example of a basic run:
+
+![Run](https://raw.githubusercontent.com/forceedge01/behaviour-suite-analyser/master/extras/bdd-analyser.png#version=1)
+
 Install
 ====
 
@@ -21,8 +25,8 @@ Copy config.php file to root of project, setup includes the kind of files you wa
 Example run:
 
 ```bash
-bdd-analyser -i
-bdd-analyser -d=features/ -c=config.php
+bdd-analyser initialise
+bdd-analyser scan . --config=.
 ```
 
 The above command will scan the features folder.
