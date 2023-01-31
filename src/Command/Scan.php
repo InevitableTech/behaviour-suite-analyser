@@ -98,7 +98,7 @@ class Scan extends Command {
             if ($outcomeCollection->getCount() > 0) {
                 return self::FAILURE;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             error($e->getMessage());
             return self::FAILURE;
         }

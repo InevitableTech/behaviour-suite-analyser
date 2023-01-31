@@ -2,6 +2,7 @@
 
 namespace Forceedge01\BDDStaticAnalyser\Command;
 
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,7 +19,10 @@ class Initialise extends Command {
     public function execute(InputInterface $input, OutputInterface $output) {
         try {
             $output->writeln('Initialising new config file');
-            if (copy(Entities\Config::DEFAULT_PATH, '.' . DIRECTORY_SEPARATOR . Entities\Config::DEFAULT_NAME)) {
+            if (copy(
+                Entities\Config::DEFAULT_PATH . Entities\Config::DEFAULT_NAME,
+                '.' . DIRECTORY_SEPARATOR . Entities\Config::DEFAULT_NAME
+            )) {
                 $output->writeln('+ ' . Entities\Config::DEFAULT_NAME);
             } else {
                 throw new Exception(
@@ -26,7 +30,7 @@ class Initialise extends Command {
                     contents into a config.php file manually:' . PHP_EOL . PHP_EOL . file_get_contents($config->path)
                 );
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln($e->getMessage());
             return self::FAILURE;
         }
