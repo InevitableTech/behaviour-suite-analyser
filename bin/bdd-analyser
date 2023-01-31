@@ -1,134 +1,14 @@
 #!/usr/bin/env php
 <?php
 
-// 1. Load folder and find files of type .feature
-// 2. Store each step used
-// 3. Store scenarios with titles and line number.
-// 5. Define hooks.
-// 6. Check background length.
-// 7. Send report to live server, show local report.
-
-use Forceedge01\BDDStaticAnalyser\Processor;
-use Forceedge01\BDDStaticAnalyser\Entities;
-
 include $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
-$VERSION = '0.1';
 
-function getAllFeatureFiles(string $directory, string $feature_file_extension) {
-    $files = scandir($directory);
-    $features = [];
-    foreach ($files as $file) {
-        $dirPath = $directory . DIRECTORY_SEPARATOR . $file;
-        if (is_dir($dirPath) && ($file != '.' && $file != '..')) {
-            // echo $dirPath . PHP_EOL;
-        	$features = array_merge($features, getAllFeatureFiles($dirPath, $feature_file_extension));
-        } else if (strpos($file, '.' . $feature_file_extension) !== false) {
-            // echo $file . PHP_EOL;
-            $features[] = $directory . DIRECTORY_SEPARATOR . $file;
-        }
-    }
+// Create the Application
+$application = new Symfony\Component\Console\Application('behaviour-automation-suite-analyser (bdd-analyser)', '0.1');
 
-    return $features;
-}
+// Register all Commands
+$application->add(new Forceedge01\BDDStaticAnalyser\Command\Scan());
+$application->add(new Forceedge01\BDDStaticAnalyser\Command\Initialise());
 
-function error($message, \Exception $e = null) {
-    echo '==> Error: ' . $message;
-
-    if ($e !== null) {
-        echo ' Exception: ' . $e->getMessage();
-    }
-
-    echo PHP_EOL;
-}
-
-function printExitCode(Entities\OutcomeCollection $collection) {
-    if ($collection->getCount() > 0) {
-        exit(2);
-    }
-}
-
-echo '<===== Behaviour Automation Suite Analayser =====>' . PHP_EOL . PHP_EOL;
-
-try {
-    $options = [
-        'd:' => 'Directory to scan for feature files',
-        's::' => 'Severities to report (Default: 0,1,2,3,4)',
-        'c::' => 'Path to config file',
-        'i::' => 'Initialise a local config file',
-        'r::' => 'Display active rules',
-        'h::' => 'This menu',
-        'v::' => 'Version',
-        'b::' => 'Verbose and debug'
-    ];
-
-    $input = getopt(implode('', array_keys($options)));
-
-    $path = isset($input['d']) ? $input['d'] : '';
-    $severities = isset($input['s']) ? $input['s'] : '0,1,2,3,4';
-    $configFile = isset($input['c']) ? realpath($input['c']) : __DIR__ . '/../config.php';
-    $config = new Entities\Config(include $configFile, $configFile);
-
-    $displayProcessorClass = $config->get('display_processor');
-    $displayProcessor = new $displayProcessorClass();
-    $displayProcessor->handleOptions($input, $config, $options, $VERSION);
-
-    $dirToScan = realpath($path);
-    $displayProcessor->inputSummary($path, $severities, $config->path, $dirToScan);
-
-    if (! $path) {
-        throw new Exception('A path must be provided (-d=<path>) to scan for files.');
-    }
-
-    if (! is_file($config->path)) {
-        throw new Exception("Config file path '{$input['c']}' is not recognised as a valid file path.");
-    }
-
-    $severities = explode(',' , $severities);
-
-    if (! $dirToScan || ! is_dir($dirToScan)) {
-        throw new Exception("-d param (provided: '$path') must point to the folder where feature files are stored.");
-    }
-
-    $featureFileProcessor = new Processor\FeatureFileProcessor();
-    $rulesProcessor = new Processor\RulesProcessor($config->get('rules'));
-    $files = getAllFeatureFiles($dirToScan, $config->get('feature_file_extension'));
-    $outcomeCollection = new Entities\OutcomeCollection();
-
-    if (! $files) {
-        throw new Exception("No feature files found in path '$dirToScan'");
-    }
-
-    if (isset($input['b'])) {
-        print_r($files);
-    }
-
-    foreach ($files as $file) {
-        try {
-            $fileContents = $featureFileProcessor->getFileContent($file);
-        } catch (Exception $e) {
-            error(sprintf('Unable to process feature file contents in file "%s".', $file), $e);
-            continue;
-        }
-
-        if (isset($input['b'])) {
-            print_r($fileContents);
-        }
-
-    	$rulesProcessor->applyRules($fileContents, $outcomeCollection);
-    }
-
-    if (isset($input['b'])) {
-        print_r($outcomeCollection);
-    }
-
-    $displayProcessor->displayOutcomes($outcomeCollection, $severities);
-    $reportProcessorClass = $config->get('report_processor');
-    $reportProcessor = new $reportProcessorClass(new Processor\HtmlProcessor(), $featureFileProcessor);
-    $reportPath = $config->get('html_report_path');
-    $reportPath = $reportProcessor->generate($reportPath, $severities, $outcomeCollection);
-    $displayProcessor->printSummary($outcomeCollection, $reportPath);
-    printExitCode($outcomeCollection);
-} catch (\Exception $e) {
-    error($e->getMessage());
-    exit(1);
-}
+// Run it
+$application->run();

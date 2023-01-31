@@ -1,0 +1,22 @@
+<?php
+
+namespace Forceedge01\BDDStaticAnalyser\Processor;
+
+class DirectoryProcessor {
+    public static function getAllFeatureFiles(string $directory, string $feature_file_extension) {
+        $files = scandir($directory);
+        $features = [];
+        foreach ($files as $file) {
+            $dirPath = $directory . DIRECTORY_SEPARATOR . $file;
+            if (is_dir($dirPath) && ($file != '.' && $file != '..')) {
+                // echo $dirPath . PHP_EOL;
+                $features = array_merge($features, self::getAllFeatureFiles($dirPath, $feature_file_extension));
+            } else if (strpos($file, '.' . $feature_file_extension) !== false) {
+                // echo $file . PHP_EOL;
+                $features[] = $directory . DIRECTORY_SEPARATOR . $file;
+            }
+        }
+
+        return $features;
+    }
+}
