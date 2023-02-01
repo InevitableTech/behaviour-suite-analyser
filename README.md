@@ -26,10 +26,10 @@ Example run:
 
 ```bash
 bdd-analyser initialise
-bdd-analyser scan . --config=.
+bdd-analyser lint . --config=.
 ```
 
-The above command will scan the features folder.
+The above command will lint the features folder.
 
 Configure the config.php file with the extension of the files that contain the cucumber/gherkin scripts.
 

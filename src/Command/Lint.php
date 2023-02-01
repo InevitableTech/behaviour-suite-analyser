@@ -11,9 +11,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Forceedge01\BDDStaticAnalyser\Processor;
 use Forceedge01\BDDStaticAnalyser\Entities;
 
-class Scan extends Command {
+class Lint extends Command {
     public function configure() {
-        $this->setName('scan');
+        $this->setName('lint');
         $this->setDescription('Analyse BDD script files and find violations based on rules enabled in the config file');
         $this->addArgument('directory', InputArgument::REQUIRED, 'Directory to scan');
         $this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Path to config file', Entities\Config::DEFAULT_PATH . Entities\Config::DEFAULT_NAME);
@@ -62,9 +62,7 @@ class Scan extends Command {
                 throw new Exception("No feature files found in path '$dirToScan'");
             }
 
-            if ($debug) {
-                $output->writeln(print_r($files, true));
-            }
+            $output->writeln(print_r($files, true), OutputInterface::VERBOSITY_DEBUG);
 
             foreach ($files as $file) {
                 try {
@@ -74,16 +72,11 @@ class Scan extends Command {
                     continue;
                 }
 
-                if ($debug) {
-                    $output->writeln(print_r($fileContents, true));
-                }
-
+                $output->writeln(print_r($fileContents, true), OutputInterface::VERBOSITY_DEBUG);
                 $rulesProcessor->applyRules($fileContents, $outcomeCollection);
             }
 
-            if ($debug) {
-                $output->writeln(print_r($outcomeCollection, true));
-            }
+            $output->writeln(print_r($outcomeCollection, true), OutputInterface::VERBOSITY_DEBUG);
 
             $displayProcessor->displayOutcomes($outcomeCollection, $severities);
             $reportProcessorClass = $config->get('report_processor');

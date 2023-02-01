@@ -7,7 +7,7 @@ include $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
 $application = new Symfony\Component\Console\Application('behaviour-automation-suite-analyser (bdd-analyser)', '1.0');
 
 // Register all Commands
-$application->add(new Forceedge01\BDDStaticAnalyser\Command\Scan());
+$application->add(new Forceedge01\BDDStaticAnalyser\Command\Lint());
 $application->add(new Forceedge01\BDDStaticAnalyser\Command\Initialise());
 
 // Run it
