@@ -11,9 +11,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Forceedge01\BDDStaticAnalyser\Processor;
 use Forceedge01\BDDStaticAnalyser\Entities;
 
-class Lint extends Command {
+class Scan extends Command {
     public function configure() {
-        $this->setName('lint');
+        $this->setName('scan');
         $this->setDescription('Analyse BDD script files and find violations based on rules enabled in the config file');
         $this->addArgument('directory', InputArgument::REQUIRED, 'Directory to scan');
         $this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Path to config file', Entities\Config::DEFAULT_PATH . Entities\Config::DEFAULT_NAME);

@@ -26,7 +26,7 @@ Example run:
 
 ```bash
 bdd-analyser initialise
-bdd-analyser lint . --config=.
+bdd-analyser scan . --config=.
 ```
 
 The above command will lint the features folder.
