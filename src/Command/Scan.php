@@ -19,7 +19,6 @@ class Scan extends Command {
         $this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Path to config file', Entities\Config::DEFAULT_PATH . Entities\Config::DEFAULT_NAME);
         $this->addOption('severities', 's', InputOption::VALUE_REQUIRED, 'Severities to display', '0,1,2,3,4');
         $this->addOption('rules', 'r', InputOption::VALUE_NONE, 'Display rules applied');
-        $this->addOption('debug', 'b', InputOption::VALUE_NONE, 'Debug and verbose mode.');
     }
 
     public function execute(InputInterface $input, OutputInterface $output) {
