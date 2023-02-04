@@ -72,6 +72,10 @@ abstract class BaseRule implements RuleInterface {
         return null;
     }
 
+    public function applyAfterFeature(FeatureFileContents $contents, OutcomeCollection $collection) {
+        return null;
+    }
+
     public function getOutcomeObject(
         int $lineNumber,
         string $message,

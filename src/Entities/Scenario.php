@@ -95,7 +95,7 @@ class Scenario {
         return array_slice($scenario, 1, count($scenario));
     }
 
-    public function getActiveSteps() {
+    public function getActiveSteps(): array {
         $steps = $this->getSteps();
 
         foreach ($steps as $index => $step) {
@@ -128,15 +128,19 @@ class Scenario {
     }
 
     public function getTitle(): string {
+        return trim($this->getRawTitle());
+    }
+
+    public function getRawTitle(): string {
         if (! $this->scenario) {
             return '';
         }
 
         if ($this->getTags()) {
-            return trim(str_replace('Scenario:', '', $this->scenario[1]));
+            return str_replace('Scenario:', '', $this->scenario[1]);
         }
 
-        return trim(str_replace('Scenario:', '', $this->scenario[0]));
+        return str_replace('Scenario:', '', $this->scenario[0]);
     }
 
     public function getStepsCount(): int {

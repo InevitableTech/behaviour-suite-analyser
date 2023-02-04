@@ -26,7 +26,6 @@ class Scan extends Command {
             $path = $input->getArgument('directory');
             $severities = $input->getOption('severities');
             $configFile = $input->getOption('config');
-            $debug = $input->getOption('debug');
             $displayRules = $input->getOption('rules');
 
             $config = new Entities\Config($configFile);

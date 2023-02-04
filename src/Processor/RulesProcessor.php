@@ -82,6 +82,8 @@ class RulesProcessor {
             $rule->afterApplyOnScenario($scenario, $collection);
         }
 
+        $rule->applyAfterFeature($contentObject, $collection);
+
         return $collection;
     }
 }

@@ -18,7 +18,7 @@ class OnlyValidOrderAllowed extends BaseRule {
 
         // A background can cause a scenario to start with when.
         if ($steps[0]->getKeyword() == 'when') {
-            $expected = array_shift($expected);
+            array_shift($expected);
         }
 
         $current = 0;

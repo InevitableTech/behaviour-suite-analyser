@@ -11,6 +11,14 @@ class Step {
         $this->parameters = $this->extractParameters();
     }
 
+    public function getTitle(): string {
+        return trim($this->getRawTitle());
+    }
+
+    public function getRawTitle(): string {
+        return $this->title;
+    }
+
     public function getStepDefinition() {
         // Remove keyword and space.
         $filtered = trim(preg_replace('/^#?\s*(given|when|then|and|but)/i', '', $this->trimmedTitle));
