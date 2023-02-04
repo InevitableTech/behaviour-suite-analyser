@@ -65,10 +65,10 @@ class ArrayProcessor {
         return array_slice($content, $start, $end - $start);
     }
 
-    public static function getContentMatching(string $match, array $content): ?string {
+    public static function getContentMatching(string $regex, array $content): ?string {
         $start = $end = null;
         foreach ($content as $index => $line) {
-            if (preg_match($match, $line)) {
+            if (preg_match($regex, $line)) {
                 return $line;
             }
         }
@@ -76,9 +76,9 @@ class ArrayProcessor {
         return null;
     }
 
-    public static function getIndexMatching(string $match, array $content): ?int {
+    public static function getIndexMatching(string $regex, array $content): ?int {
         foreach ($content as $index => $line) {
-            if (preg_match($match, $line)) {
+            if (preg_match($regex, $line)) {
                 return $index;
             }
         }

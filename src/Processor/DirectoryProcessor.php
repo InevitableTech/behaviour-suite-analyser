@@ -11,7 +11,7 @@ class DirectoryProcessor {
             if (is_dir($dirPath) && ($file != '.' && $file != '..')) {
                 // echo $dirPath . PHP_EOL;
                 $features = array_merge($features, self::getAllFeatureFiles($dirPath, $feature_file_extension));
-            } else if (strpos($file, '.' . $feature_file_extension) !== false) {
+            } else if (pathinfo($file, PATHINFO_EXTENSION) === $feature_file_extension) {
                 // echo $file . PHP_EOL;
                 $features[] = $directory . DIRECTORY_SEPARATOR . $file;
             }

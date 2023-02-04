@@ -36,10 +36,17 @@ class FeatureFileProcessor {
         $started = false;
 
         // Feature declaration block
-        $featureDeclarationBlockIndex = ArrayProcessor::getIndexMatching('/^Feature:.*/s', $contents);
+        $featureDeclarationBlockIndex = ArrayProcessor::getIndexMatching('/^Feature:.*/is', $contents);
 
+        // We could not find a block starting with Feature, lets try to find a closest match and inform the user.
         if ($featureDeclarationBlockIndex === null) {
-            throw new \Exception('Invalid feature file, no feature definition found in file.');
+            $string = '';
+            if (strlen($contents[0]) > 0) {
+                $nonCompatibleIndex = ArrayProcessor::getIndexMatching('/Feature:.*/is', $contents);
+                $string = 'This may be due to encoding issues, closest match: ' . utf8_encode($contents[$nonCompatibleIndex]);
+            }
+
+            throw new \Exception('Invalid feature file, no feature declaration found in file. ' . $string);
         }
 
         foreach ($contents as $index => $line) {
