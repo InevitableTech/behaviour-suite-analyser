@@ -50,8 +50,8 @@ class ArrayProcessor {
         $start = $end = null;
         foreach ($content as $index => $line) {
             // Starting line.
-            if (preg_match($startRegex, $line)) {
-                $start = $index;
+            if (!$start && preg_match($startRegex, $line)) {
+                $start = $index + 1;
                 continue;
             }
 

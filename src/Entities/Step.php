@@ -3,12 +3,17 @@
 namespace Forceedge01\BDDStaticAnalyser\Entities;
 
 class Step {
-    public function __construct(int $lineNumber, string $title, array $table = []) {
+    public function __construct(int $lineNumber, string $title, array $table = [], array $pyString = []) {
         $this->lineNumber = $lineNumber;
         $this->title = $title;
         $this->trimmedTitle = trim($title);
         $this->table = $table;
         $this->parameters = $this->extractParameters();
+        $this->pyString = $pyString;
+    }
+
+    public function getPyString(): array {
+        return $this->pyString;
     }
 
     public function getTitle(): string {

@@ -26,5 +26,8 @@
                 "chmod +x bin/bdd-analyser"
             ]
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9"
     }
 }

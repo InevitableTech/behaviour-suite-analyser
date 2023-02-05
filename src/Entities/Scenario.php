@@ -4,12 +4,20 @@ namespace Forceedge01\BDDStaticAnalyser\Entities;
 
 use Forceedge01\BDDStaticAnalyser\Processor;
 
-class Scenario {
-    public function __construct(int $lineNumber, array $scenario, bool $active = true) {
+class Scenario
+{
+    public function __construct(int $lineNumber, array $scenario, bool $active = true)
+    {
         $this->lineNumber = $lineNumber;
         $this->scenario = $scenario;
-        $this->examples = $this->getExamples($scenario);
+        $this->examples = $this->getExamples($this->removePyStrings($scenario));
         $this->active = $active;
+    }
+
+    public function removePyStrings(array $scenario): array {
+        $pyString = Processor\ArrayProcessor::getContentBetween('/^\s*"""\s*$/', '/^\s*"""\s*$/', $scenario);
+
+        return array_diff($scenario, $pyString);
     }
 
     public function getSteps(): ?array {
@@ -21,42 +29,68 @@ class Scenario {
 
         $stepObjects = [];
         $table = [];
-        $tableStepIndex = false;
-        $tableStep = null;
+        $pyString = [];
+        $pyStringStep = '';
+        $pyStringStartIndex = false;
+        $tableOrPyStringStepIndex = false;
 
         // Check if a step has a table.
         foreach ($steps as $index => $step) {
             $trimmedStep = trim($step);
 
             // Strip out any comments within the content.
-            if (! $this->isStepDefinition($trimmedStep)) {
+            if ($this->isComment($trimmedStep)) {
                 continue;
             }
 
-            // If we detect the step will have a table
-            if (!$this->isExampleBlock($trimmedStep) && $this->isTabledStep($trimmedStep)) {
-                $tableStepIndex = $index;
-                $tableStep = $step;
-                continue;
-            }
+            // If we detect the step will have a table or pyString.
+            if ($this->isTabledOrPyStringedStep($trimmedStep)) {
+                $tableOrPyStringStepIndex = $index;
 
-            if ($this->isTableBlock($trimmedStep)) {
+                // Defer adding until we've got the table or pystring.
+                continue;
+            } elseif ($this->isPyStringBlock($trimmedStep)) { // If we're dealing with a PyString.
+                if (! $pyStringStartIndex) {
+                    $pyStringStartIndex = $index;
+                } elseif ($pyStringStartIndex) {
+                    // This ending marks the end of the step?
+                    $stepObjects[$pyStringStartIndex] = new Step(
+                        $this->lineNumber + ($tableOrPyStringStepIndex+1),
+                        $steps[$tableOrPyStringStepIndex],
+                        [],
+                        $pyString
+                    );
+
+                    $pyString = [];
+                    $pyStringStartIndex = false;
+                    $tableOrPyStringStepIndex = false;
+                }
+
+                // We skip the start and end quotes of the pystring block.
+                continue;
+            } elseif ($pyStringStartIndex !== false) { // Until the pystring closes, we keep adding it in.
+                $pyString[] = $step;
+                continue;
+            } elseif ($this->isTableBlock($trimmedStep)) { // If we're dealing with a table (example or otherwise).
                 // Step table.
                 $table[] = $step;
-            } else if ($this->isExampleBlock($trimmedStep) || $trimmedStep === '') {
+            } elseif ($this->isExampleBlock($trimmedStep) || $trimmedStep === '') {
                 // Examples statement to be skipped, not considered a step.
                 continue;
             } else {
-                if ($tableStepIndex) {
+                // Add the step, processes any previous data as well.
+
+                if ($tableOrPyStringStepIndex) {
                     // Add the definition in with table if found.
-                    $stepObjects[$tableStepIndex] = new Step(
-                        $this->lineNumber + ($tableStepIndex+1),
-                        $steps[$tableStepIndex],
-                        $table
+                    $stepObjects[$tableOrPyStringStepIndex] = new Step(
+                        $this->lineNumber + ($tableOrPyStringStepIndex+1),
+                        $steps[$tableOrPyStringStepIndex],
+                        $table,
+                        []
                     );
 
                     $table = [];
-                    $tableStepIndex = false;
+                    $tableOrPyStringStepIndex = false;
                 }
 
                 $stepObjects[$index] = new Step(
@@ -66,15 +100,32 @@ class Scenario {
             }
         }
 
+        if ($tableOrPyStringStepIndex !== false) {
+            $stepObjects[$tableOrPyStringStepIndex] = new Step(
+                $this->lineNumber + ($tableOrPyStringStepIndex+1),
+                $steps[$tableOrPyStringStepIndex],
+                $table,
+                $pyString
+            );
+        }
+
         return Processor\ArrayProcessor::cleanArray($stepObjects);
+    }
+
+    private function isComment(string $line): bool {
+        return preg_match('/^#.*/', $line);
+    }
+
+    private function isPyStringBlock($line): bool {
+        return $line === '"""';
     }
 
     private function isExampleBlock($line): bool {
         return $line === 'Examples:';
     }
 
-    private function isTabledStep($line): bool {
-        return substr($line, -1) === ':';
+    private function isTabledOrPyStringedStep($line): bool {
+        return $this->isStepDefinition($line) && substr($line, -1) === ':';
     }
 
     private function isTableBlock($line): bool {
@@ -119,7 +170,7 @@ class Scenario {
                 $examples[] = $step;
             }
 
-            if (strpos(trim($step), 'Examples:') === 0) {
+            if ($this->isExampleBlock(trim($step))) {
                 $examplesStart = true;
             }
         }
@@ -150,7 +201,7 @@ class Scenario {
     public function getTags(): array {
         preg_match('/^@.*/', trim($this->scenario[0]), $matches);
         if (count($matches) > 0) {
-            return explode(' ', $this->scenario[0]);
+            return Processor\ArrayProcessor::cleanArray(explode(' ', $this->scenario[0]));
         }
 
         return [];
