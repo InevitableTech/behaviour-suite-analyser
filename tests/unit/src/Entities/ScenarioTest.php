@@ -176,6 +176,64 @@ final class ScenarioTest extends TestCase
         self::assertEquals(0, count($steps[3]->pyString));
     }
 
+    public function testGetStepsPyStringMultiple()
+    {
+        $testObject = new Entities\Scenario(15, [
+            "  Scenario: This is a test scenario",
+            '    Given I login with "abc" and "123"',
+            "    When I am on the dashboard:",
+            '    """',
+            '      A story of great riches',
+            '      And it continues',
+            '      Examples:',
+            '      All above should be ignored.',
+            '    """',
+            "    Then I should see something:",
+            '    """',
+            '      Second story of great riches',
+            '      And it continues',
+            '      Examples:',
+            '      All above should be ignored.',
+            '    """',
+            "    But I should not see something"
+        ], true);
+
+        $steps = $testObject->getSteps();
+
+        self::assertEquals(4, count($steps));
+        self::assertEquals(15, $testObject->lineNumber);
+        self::assertEquals([], $testObject->examples);
+        self::assertTrue($testObject->active);
+
+        self::assertEquals(16, $steps[0]->lineNumber);
+        self::assertEquals('    Given I login with "abc" and "123"', $steps[0]->title);
+        self::assertEquals(0, count($steps[0]->table));
+        self::assertEquals(0, count($steps[0]->pyString));
+
+        self::assertEquals(17, $steps[1]->lineNumber);
+        self::assertEquals('    When I am on the dashboard:', $steps[1]->title);
+        self::assertEquals(0, count($steps[1]->table));
+        self::assertEquals(4, count($steps[1]->pyString));
+        self::assertEquals([
+            '      A story of great riches',
+            '      And it continues',
+            '      Examples:',
+            '      All above should be ignored.',
+        ], $steps[1]->pyString);
+
+        self::assertEquals(24, $steps[2]->lineNumber);
+        self::assertEquals('    Then I should see something:', $steps[2]->title);
+        self::assertIsArray($steps[2]->table);
+        self::assertEquals(0, count($steps[2]->table));
+        self::assertEquals(4, count($steps[2]->pyString));
+
+        self::assertEquals(31, $steps[3]->lineNumber);
+        self::assertEquals('    But I should not see something', $steps[3]->title);
+        self::assertIsArray($steps[3]->table);
+        self::assertEquals(0, count($steps[3]->table));
+        self::assertEquals(0, count($steps[3]->pyString));
+    }
+
     public function testGetStepsSimpleWithTags()
     {
         $testObject = new Entities\Scenario(5, [
