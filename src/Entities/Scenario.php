@@ -39,7 +39,7 @@ class Scenario
             $trimmedStep = trim($step);
 
             // Strip out any comments within the content.
-            if ($this->isComment($trimmedStep)) {
+            if ($trimmedStep === '' || $this->isComment($trimmedStep)) {
                 continue;
             }
 
@@ -74,12 +74,11 @@ class Scenario
             } elseif ($this->isTableBlock($trimmedStep)) { // If we're dealing with a table (example or otherwise).
                 // Step table.
                 $table[] = $step;
-            } elseif ($this->isExampleBlock($trimmedStep) || $trimmedStep === '') {
+            } elseif ($this->isExampleBlock($trimmedStep)) {
                 // Examples statement to be skipped, not considered a step.
                 continue;
             } else {
                 // Add the step, processes any previous data as well.
-
                 if ($tableOrPyStringStepIndex) {
                     // Add the definition in with table if found.
                     $stepObjects[$tableOrPyStringStepIndex] = new Step(
