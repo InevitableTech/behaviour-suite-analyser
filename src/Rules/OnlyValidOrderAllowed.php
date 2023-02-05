@@ -7,8 +7,15 @@ use Forceedge01\BDDStaticAnalyser\Entities;
 class OnlyValidOrderAllowed extends BaseRule {
     protected $violationMessage = 'Expected step to start with keyword "%s", got "%s" instead. Are you missing a "%s" step?';
 
+    protected $violationMessage2 = 'Unexpected keyword %s found in step. Have you repeated steps?';
+
     public function applyOnScenario(Entities\Scenario $scenario, Entities\OutcomeCollection $collection) {
         $steps = $scenario->getActiveSteps();
+
+        if (! $steps) {
+            return;
+        }
+
         $expected = [
             'given',
             'when',
@@ -33,19 +40,40 @@ class OnlyValidOrderAllowed extends BaseRule {
                 } else {
                     $collection->addOutcome($this->getStepOutcome(
                         $step,
-                        sprintf($this->violationMessage, $expected[$current], $keyword, $expected[$current]),
+                        sprintf(
+                            $this->violationMessage,
+                            $expected[$current],
+                            $keyword,
+                            $expected[$current]
+                        ),
                         Entities\Outcome::MEDIUM
                     ));
                     break;
                 }
             } elseif ($keyword === 'and') {
                 continue;
+            } elseif ($current > count($expected) - 1) {
+                // We've completed the order but we've just encountered another keyword.
+                $collection->addOutcome($this->getStepOutcome(
+                    $step,
+                    sprintf(
+                        $this->violationMessage2,
+                        $keyword
+                    ),
+                    Entities\Outcome::MEDIUM
+                ));
+                break;
             } elseif ($keyword == $expected[$current]) {
                 $current++;
             } else {
                 $collection->addOutcome($this->getStepOutcome(
                     $step,
-                    sprintf($this->violationMessage, $expected[$current], $keyword, $expected[$current]),
+                    sprintf(
+                        $this->violationMessage,
+                        $expected[$current],
+                        $keyword,
+                        $expected[$current]
+                    ),
                     Entities\Outcome::MEDIUM
                 ));
                 break;

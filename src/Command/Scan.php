@@ -66,12 +66,18 @@ class Scan extends Command {
                 try {
                     $fileContents = $featureFileProcessor->getFileContent($file);
                 } catch (Exception $e) {
-                    $this->error($output, sprintf('Unable to process feature file contents in file "%s".', $file), $e);
+                    self::error($output, sprintf('Unable to process feature file contents in file "%s".', $file), $e);
                     continue;
                 }
 
                 $output->writeln(print_r($fileContents, true), OutputInterface::VERBOSITY_DEBUG);
-                $rulesProcessor->applyRules($fileContents, $outcomeCollection);
+
+                try {
+                    $rulesProcessor->applyRules($fileContents, $outcomeCollection);
+                } catch (Exception $e) {
+                    self::error($output, sprintf(''), $e);
+                    continue;
+                }
             }
 
             $output->writeln(print_r($outcomeCollection, true), OutputInterface::VERBOSITY_DEBUG);
@@ -87,14 +93,14 @@ class Scan extends Command {
                 return self::FAILURE;
             }
         } catch (Exception $e) {
-            $this->error($output, $e->getMessage());
+            self::error($output, $e->getMessage());
             return self::FAILURE;
         }
 
         return self::SUCCESS;
     }
 
-    private function error($output, $message, \Exception $e = null) {
+    private static function error($output, $message, \Exception $e = null) {
         $output->write('<error>==> Error: ' . $message);
 
         if ($e !== null) {

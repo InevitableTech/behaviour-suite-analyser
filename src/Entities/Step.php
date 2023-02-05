@@ -47,6 +47,10 @@ class Step {
         $match =[];
         preg_match('/^#?\s*(given|when|then|and|but)/i', $this->trimmedTitle, $match);
 
+        if (!isset($match[0])) {
+            throw new \Exception("Step '{$this->trimmedTitle}' does not have a keyword.");
+        }
+
         return strtolower($match[0]);
     }
 

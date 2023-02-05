@@ -21,17 +21,18 @@ class RulesProcessor {
         $collection->summary['files']++;
         $collection->summary['activeRules'] = $this->rules;
 
-        foreach ($this->rules as $rule => $params) {
+        foreach ($this->rules as $ruleClass => $params) {
             try {
-                $rule = $this->getRule($rule, $params);
+                $rule = $this->getRule($ruleClass, $params);
                 $rule->beforeApply($contentObject->filePath, $collection);
                 $this->outcome[] = $this->applyRule($contentObject, $rule, $collection);
             } catch (\Exception $e) {
-                error(sprintf(
-                    'Unable to apply rule "%s" on file "%s".',
-                    $rule,
-                    $contentObject->filePath
-                ), $e);
+                throw new \Exception(sprintf(
+                    'Unable to apply rule "%s" on file "%s". Error: %s',
+                    $ruleClass,
+                    $contentObject->filePath,
+                    $e->getMessage()
+                ));
                 continue;
             }
         }

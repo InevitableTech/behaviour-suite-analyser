@@ -41,9 +41,11 @@ class FeatureFileProcessor {
         // We could not find a block starting with Feature, lets try to find a closest match and inform the user.
         if ($featureDeclarationBlockIndex === null) {
             $string = '';
-            if (strlen($contents[0]) > 0) {
+            if (is_array($contents) && isset($contents[0]) && strlen($contents[0]) > 0) {
                 $nonCompatibleIndex = ArrayProcessor::getIndexMatching('/Feature:.*/is', $contents);
-                $string = 'This may be due to encoding issues, closest match: ' . utf8_encode($contents[$nonCompatibleIndex]);
+                if ($nonCompatibleIndex !== null) {
+                    $string = 'This may be due to encoding issues, closest match: ' . utf8_encode($contents[$nonCompatibleIndex]);
+                }
             }
 
             throw new \Exception('Invalid feature file, no feature declaration found in file. ' . $string);
