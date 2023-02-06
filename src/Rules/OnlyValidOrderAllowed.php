@@ -13,7 +13,7 @@ class OnlyValidOrderAllowed extends BaseRule {
         $steps = $scenario->getActiveSteps();
 
         if (! $steps) {
-            return;
+            return null;
         }
 
         $expected = [
