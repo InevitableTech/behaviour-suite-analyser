@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Forceedge01\BDDStaticAnalyser\Entities;
+use Forceedge01\BDDStaticAnalyserRules\Entities;
 use Forceedge01\BDDStaticAnalyser\Processor;
 
 final class FeatureFileProcessorTest extends TestCase
