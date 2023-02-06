@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Forceedge01\BDDStaticAnalyser\Command;
 
 use Exception;
@@ -11,8 +13,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Forceedge01\BDDStaticAnalyser\Processor;
 use Forceedge01\BDDStaticAnalyserRules\Entities;
 
-class Scan extends Command {
-    public function configure() {
+class Scan extends Command
+{
+    public function configure()
+    {
         $this->setName('scan');
         $this->setDescription('Analyse BDD script files and find violations based on rules enabled in the config file');
         $this->addArgument('directory', InputArgument::REQUIRED, 'Directory to scan');
@@ -21,7 +25,8 @@ class Scan extends Command {
         $this->addOption('rules', 'r', InputOption::VALUE_NONE, 'Display rules applied');
     }
 
-    public function execute(InputInterface $input, OutputInterface $output) {
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
         try {
             $path = $input->getArgument('directory');
             $severities = $input->getOption('severities');
@@ -45,7 +50,7 @@ class Scan extends Command {
                 throw new Exception('A path must be provided (-d=<path>) to scan for files.');
             }
 
-            $severities = explode(',' , $severities);
+            $severities = explode(',', $severities);
 
             if (! $dirToScan || ! is_dir($dirToScan)) {
                 throw new Exception("-d param (provided: '$path') must point to the folder where feature files are stored.");
@@ -100,7 +105,8 @@ class Scan extends Command {
         return self::SUCCESS;
     }
 
-    private static function error($output, $message, \Exception $e = null) {
+    private static function error(OutputInterface $output, string $message, \Exception $e = null)
+    {
         $output->write('<error>==> Error: ' . $message);
 
         if ($e !== null) {

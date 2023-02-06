@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Forceedge01\BDDStaticAnalyser\Command;
 
 use Exception;
@@ -10,13 +12,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Forceedge01\BDDStaticAnalyser\Processor;
 use Forceedge01\BDDStaticAnalyserRules\Entities;
 
-class Initialise extends Command {
-    public function configure() {
+class Initialise extends Command
+{
+    public function configure()
+    {
         $this->setName('initialise');
         $this->setDescription('Initiliase a local config file');
     }
 
-    public function execute(InputInterface $input, OutputInterface $output) {
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
         try {
             $output->writeln('Initialising new config file');
 

@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Forceedge01\BDDStaticAnalyser\Processor;
 
 use Forceedge01\BDDStaticAnalyserRules\Entities;
 
-class ReportProcessor implements ReportProcessorInterface {
-    public function __construct(HtmlProcessor $html, FeatureFileProcessor $featureFileProcessor) {
+class ReportProcessor implements ReportProcessorInterface
+{
+    public function __construct(HtmlProcessor $html, FeatureFileProcessor $featureFileProcessor)
+    {
         $this->html = $html;
         $this->featureFileProcessor = $featureFileProcessor;
     }
@@ -61,7 +65,8 @@ class ReportProcessor implements ReportProcessorInterface {
         return $path;
     }
 
-    private function generateSingleOutcomeSummary(Entities\Outcome $outcome, HtmlProcessor $html, $id) {
+    private function generateSingleOutcomeSummary(Entities\Outcome $outcome, HtmlProcessor $html, $id)
+    {
         $html->openTag('div', 'row')
             ->openCloseTag("div,button onclick='resolve(\"${id}\")'", 'Resolved', 'right')
             ->openCloseTag("div,button onclick='unresolve(\"${id}\")'", 'Unresolved', 'right')
@@ -79,7 +84,8 @@ class ReportProcessor implements ReportProcessorInterface {
         $html->openCloseTag('div', 'Violation: ' . $outcome->message . ' (' . $outcome->severity . ')', 'row error violation');
     }
 
-    private function saveFile(string $path, string $content) {
+    private function saveFile(string $path, string $content)
+    {
         $folderPath = dirname($path);
         if (!is_dir($folderPath) && !mkdir($folderPath, 0777, true)) {
             throw new \Exception('Unable to create folder for report at path ' . $folderPath);

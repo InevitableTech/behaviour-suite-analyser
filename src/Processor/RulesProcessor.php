@@ -1,23 +1,30 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Forceedge01\BDDStaticAnalyser\Processor;
 
 use Forceedge01\BDDStaticAnalyserRules\Rules;
 use Forceedge01\BDDStaticAnalyserRules\Entities;
 
-class RulesProcessor {
+class RulesProcessor
+{
     private array $rules = [];
     private array $ruleObjects = [];
     private array $outcome = [];
 
-    public function __construct($rules) {
+    public function __construct(array $rules)
+    {
         $this->rules = $rules;
     }
 
     /**
      * All rules are applied everytime on each file.
      */
-    public function applyRules(Entities\FeatureFileContents $contentObject, Entities\OutcomeCollection $collection): Entities\OutcomeCollection {
+    public function applyRules(
+        Entities\FeatureFileContents $contentObject,
+        Entities\OutcomeCollection $collection
+    ): Entities\OutcomeCollection {
         $collection->summary['files']++;
         $collection->summary['activeRules'] = $this->rules;
 
@@ -40,7 +47,8 @@ class RulesProcessor {
         return $collection;
     }
 
-    public function getRule(string $rule, array $params = null): Rules\RuleInterface {
+    public function getRule(string $rule, array $params = null): Rules\RuleInterface
+    {
         if (isset($this->ruleObjects[$rule])) {
             return $this->ruleObjects[$rule]->reset();
         }

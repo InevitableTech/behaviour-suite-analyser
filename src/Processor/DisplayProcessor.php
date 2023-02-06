@@ -1,16 +1,19 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Forceedge01\BDDStaticAnalyser\Processor;
 
 use Forceedge01\BDDStaticAnalyserRules\Entities;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DisplayProcessor implements DisplayProcessorInterface {
-    public function setOutput(OutputInterface $output) {
+class DisplayProcessor implements DisplayProcessorInterface
+{
+    public function setOutput(OutputInterface $output)
+    {
         $this->output = $output;
     }
 
-    public function inputSummary(string $path, string $severities, string $configPath, string $dirToScan) {
+    public function inputSummary(string $path, string $severities, string $configPath, string $dirToScan)
+    {
         $this->output->writeln('<info>Input summary');
         $this->output->writeln('----</info>');
 
@@ -19,7 +22,8 @@ class DisplayProcessor implements DisplayProcessorInterface {
         $this->output->writeln('Config path: ' . $configPath . PHP_EOL);
     }
 
-    public function displayOutcomes(Entities\OutcomeCollection $outcomes, array $severities) {
+    public function displayOutcomes(Entities\OutcomeCollection $outcomes, array $severities)
+    {
         $items = ArrayProcessor::applySeveritiesFilter($outcomes->getItems(), $severities);
         $items = ArrayProcessor::sortByFile($items);
         $items = ArrayProcessor::sortInternalArrayBy($items, 'lineNumber', SORT_ASC);
@@ -36,7 +40,8 @@ class DisplayProcessor implements DisplayProcessorInterface {
         }
     }
 
-    public function printSummary(Entities\OutcomeCollection $outcomes, string $reportPath) {
+    public function printSummary(Entities\OutcomeCollection $outcomes, string $reportPath)
+    {
         $violationsCount = count($outcomes->getItems());
         $violationsByRule = $this->getViolationsByRule($outcomes);
 
@@ -60,7 +65,8 @@ class DisplayProcessor implements DisplayProcessorInterface {
         $this->output->writeln('Html report generated: <comment>file://' . realpath($reportPath) . '</comment>' . PHP_EOL);
     }
 
-    private function displaySingleOutcomeSummary(int $itemNumber, Entities\Outcome $outcome, OutputInterface $output) {
+    private function displaySingleOutcomeSummary(int $itemNumber, Entities\Outcome $outcome, OutputInterface $output)
+    {
         $length = strlen((string) $itemNumber);
         $spaces = str_repeat(' ', $length);
 
@@ -73,7 +79,8 @@ class DisplayProcessor implements DisplayProcessorInterface {
         $output->write(PHP_EOL);
     }
 
-    private function getViolationsByRule(Entities\OutcomeCollection $collection): array {
+    private function getViolationsByRule(Entities\OutcomeCollection $collection): array
+    {
         $counts = [];
         foreach ($collection->getItems() as $outcome) {
             if (!isset($counts[$outcome->getRuleShortName()])) {

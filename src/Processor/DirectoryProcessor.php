@@ -1,9 +1,11 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Forceedge01\BDDStaticAnalyser\Processor;
 
-class DirectoryProcessor {
-    public static function getAllFeatureFiles(string $directory, string $feature_file_extension) {
+class DirectoryProcessor
+{
+    public static function getAllFeatureFiles(string $directory, string $feature_file_extension)
+    {
         $files = scandir($directory);
         $features = [];
         foreach ($files as $file) {

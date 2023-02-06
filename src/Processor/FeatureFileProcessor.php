@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Forceedge01\BDDStaticAnalyser\Processor;
 
 use Forceedge01\BDDStaticAnalyserRules\Entities;
 
-class FeatureFileProcessor {
+class FeatureFileProcessor
+{
     private array $fileObjectLibrary = [];
 
-    public function getFileContent(string $file): Entities\FeatureFileContents {
+    public function getFileContent(string $file): Entities\FeatureFileContents
+    {
         if (isset($this->fileObjectLibrary[$file])) {
             return $this->fileObjectLibrary[$file];
         }
@@ -29,7 +33,8 @@ class FeatureFileProcessor {
         return $this->fileObjectLibrary[$file];
     }
 
-    public function getFeature(array $contents): Entities\Feature {
+    public function getFeature(array $contents): Entities\Feature
+    {
         $feature = [];
         $endOfFileIndex = count($contents)-1;
         $tags = '';
@@ -44,7 +49,8 @@ class FeatureFileProcessor {
             if (is_array($contents) && isset($contents[0]) && strlen($contents[0]) > 0) {
                 $nonCompatibleIndex = ArrayProcessor::getIndexMatching('/Feature:.*/is', $contents);
                 if ($nonCompatibleIndex !== null) {
-                    $string = 'This may be due to encoding issues, closest match: ' . utf8_encode($contents[$nonCompatibleIndex]);
+                    $string = 'This may be due to encoding issues, closest match: ' .
+                        utf8_encode($contents[$nonCompatibleIndex]);
                 }
             }
 
@@ -62,7 +68,11 @@ class FeatureFileProcessor {
                 $this->hasTags($line) ||
                 $endOfFileIndex === $index)
             ) {
-                $feature = array_slice($contents, $featureDeclarationBlockIndex, $index - $featureDeclarationBlockIndex);
+                $feature = array_slice(
+                    $contents,
+                    $featureDeclarationBlockIndex,
+                    $index - $featureDeclarationBlockIndex
+                );
                 if ($tags) {
                     array_unshift($feature, implode(' ', $tags));
                 }
@@ -73,7 +83,8 @@ class FeatureFileProcessor {
         return new Entities\Feature(ArrayProcessor::reIndexArray($feature));
     }
 
-    public function getBackground(array $contents): ?Entities\Background {
+    public function getBackground(array $contents): ?Entities\Background
+    {
         $background = [];
         $start = null;
         $end = null;
@@ -109,7 +120,8 @@ class FeatureFileProcessor {
         );
     }
 
-    public function getScenarios(array $contents): array {
+    public function getScenarios(array $contents): array
+    {
         $scenarios = [];
         $start = false;
         $startingIndex = 0;
@@ -119,10 +131,15 @@ class FeatureFileProcessor {
         foreach ($contents as $index => $line) {
             if ($this->isScenarioDeclaration($line)) {
                 $found = true;
-                // If this is the start of the scenario encountered, don't process it yet, wait until it finishes and another starts.
+                // If this is the start of the scenario encountered, don't process it yet, wait until it
+                // finishes and another starts.
                 if ($start === true) {
                     // Extract scenario content.
-                    $scenarioContent = ArrayProcessor::reIndexArray(array_slice($contents, $startingIndex, $index - $startingIndex));
+                    $scenarioContent = ArrayProcessor::reIndexArray(array_slice(
+                        $contents,
+                        $startingIndex,
+                        $index - $startingIndex
+                    ));
 
                     // Add scenario tags to scenario.
                     $tags = $this->getTagsFromLineBefore($contents, $startingIndex);
@@ -157,7 +174,11 @@ class FeatureFileProcessor {
             // If we've made it to the end of the file and a scenario block was found before, assume the
             // rest of the content to be scenario content.
             if ($endOfFileIndex === $index && $found) {
-                $scenarioContent= ArrayProcessor::reIndexArray(array_slice($contents, $startingIndex, $index - ($startingIndex-1)));
+                $scenarioContent= ArrayProcessor::reIndexArray(array_slice(
+                    $contents,
+                    $startingIndex,
+                    $index - ($startingIndex-1)
+                ));
                 $tags = $this->getTagsFromLineBefore($contents, $startingIndex);
 
                 if ($tags) {
@@ -175,23 +196,28 @@ class FeatureFileProcessor {
         return $scenarios;
     }
 
-    private function hasTags(string $line): bool {
+    private function hasTags(string $line): bool
+    {
         return (bool) preg_match('/^@.*/s', trim($line));
     }
 
-    private function isScenarioDeclaration(string $line): bool {
+    private function isScenarioDeclaration(string $line): bool
+    {
         return (bool) preg_match('/^(Scenario:.*)/s', trim($line));
     }
 
-    private function isBackgroundDeclaration(string $line): bool {
+    private function isBackgroundDeclaration(string $line): bool
+    {
         return (bool) preg_match('/^Background:.*/s', trim($line));
     }
 
-    private function isFeatureDeclaration(string $line): bool {
+    private function isFeatureDeclaration(string $line): bool
+    {
         return (bool) preg_match('/^Feature:.*/s', trim($line));
     }
 
-    private function getTagsFromLineBefore(array $contents, $index): array {
+    private function getTagsFromLineBefore(array $contents, $index): array
+    {
         if (! isset($contents[$index - 1])) {
             return [];
         }
