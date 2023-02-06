@@ -11,7 +11,10 @@
     },
     "authors": [
         {
-            "name": "Abdul Wahhab Qureshi"
+            "name": "Abdul Wahhab Qureshi (inevitabletech.uk)",
+            "email": "its.inevitable@hotmail.com",
+            "homepage": "https://inevitabletech.uk",
+            "role": "lead dev"
         }
     ],
     "require": {
