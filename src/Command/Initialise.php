@@ -25,14 +25,15 @@ class Initialise extends Command {
             }
 
             if (copy(
-                Entities\Config::DEFAULT_PATH . Entities\Config::DEFAULT_NAME,
+                DEFAULT_CONFIG_PATH . Entities\Config::DEFAULT_NAME,
                 '.' . DIRECTORY_SEPARATOR . Entities\Config::DEFAULT_NAME
             )) {
                 $output->writeln('+ ' . Entities\Config::DEFAULT_NAME);
             } else {
                 throw new Exception(
                     'Unable to create config file, likely due to permissions. Copy the following
-                    contents into a config.php file manually:' . PHP_EOL . PHP_EOL . file_get_contents($config->path)
+                    contents into a config.php file manually:' . PHP_EOL . PHP_EOL .
+                    file_get_contents(DEFAULT_CONFIG_PATH . Entities\Config::DEFAULT_NAME)
                 );
             }
         } catch (Exception $e) {

@@ -3,6 +3,8 @@
 
 include $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
 
+define('DEFAULT_CONFIG_PATH', __DIR__ . '/../');
+
 // Create the Application
 $application = new Symfony\Component\Console\Application('behaviour-automation-suite-analyser (bdd-analyser)', '1.0');
 
