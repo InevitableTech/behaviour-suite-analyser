@@ -12,6 +12,7 @@ class Scenario
         $this->scenario = $scenario;
         $this->examples = $this->getExamples($this->removePyStrings($scenario));
         $this->active = $active;
+        $this->steps = [];
     }
 
     public function removePyStrings(array $scenario): array {
@@ -23,6 +24,10 @@ class Scenario
     public function getSteps(): ?array {
         if (! $this->scenario) {
             return null;
+        }
+
+        if ($this->steps) {
+            return $this->steps;
         }
 
         $steps = $this->removeTagsAndScenarioFromSteps();
@@ -108,7 +113,9 @@ class Scenario
             );
         }
 
-        return Processor\ArrayProcessor::cleanArray($stepObjects);
+        $this->steps = Processor\ArrayProcessor::cleanArray($stepObjects);
+
+        return $this->steps;
     }
 
     private function isComment(string $line): bool {
