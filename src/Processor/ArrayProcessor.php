@@ -26,6 +26,17 @@ class ArrayProcessor
         return $sorted;
     }
 
+    public static function sortByRule(array $outcomes): array
+    {
+        // Sort by file.
+        $sorted = [];
+        foreach ($outcomes as $items) {
+            $sorted[$items->getRuleShortName()][] = $items;
+        }
+
+        return $sorted;
+    }
+
     public static function sortInternalArrayBy(array $sorted, string $column, int $order)
     {
         // Sort by severity, lineNumber

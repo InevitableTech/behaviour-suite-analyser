@@ -21,20 +21,28 @@ class HtmlProcessor
     {
         if (is_array($tag)) {
             foreach ($tag as $t) {
-                $this->html .= "<$t class='$class'>";
+                $this->html .= "<$t";
+                if ($class) {
+                    $this->html .= " class='$class'";
+                }
+                $this->html .= '>';
             }
 
             return $this;
         }
 
-        $this->html .= "<$tag class='$class'>";
+        $this->html .= "<$tag";
+        if ($class) {
+            $this->html .= " class='$class'";
+        }
+        $this->html .= '>';
 
         return $this;
     }
 
     public function tag(string $tag)
     {
-        $this->html = "<$tag>";
+        $this->html .= "<$tag>";
 
         return $this;
     }

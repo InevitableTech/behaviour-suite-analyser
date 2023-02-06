@@ -50,12 +50,11 @@ class Scan extends Command
                 throw new Exception('A path must be provided (-d=<path>) to scan for files.');
             }
 
-            $severities = explode(',', $severities);
-
             if (! $dirToScan || ! is_dir($dirToScan)) {
-                throw new Exception("-d param (provided: '$path') must point to the folder where feature files are stored.");
+                throw new Exception("Path: '$path' must point to the folder where feature files are stored.");
             }
 
+            $severities = explode(',', $severities);
             $featureFileProcessor = new Processor\FeatureFileProcessor();
             $rulesProcessor = new Processor\RulesProcessor($config->get('rules'));
             $files = Processor\DirectoryProcessor::getAllFeatureFiles($dirToScan, $config->get('feature_file_extension'));
@@ -88,10 +87,7 @@ class Scan extends Command
             $output->writeln(print_r($outcomeCollection, true), OutputInterface::VERBOSITY_DEBUG);
 
             $displayProcessor->displayOutcomes($outcomeCollection, $severities);
-            $reportProcessorClass = $config->get('report_processor');
-            $reportProcessor = new $reportProcessorClass(new Processor\HtmlProcessor(), $featureFileProcessor);
-            $reportPath = $config->get('html_report_path');
-            $reportPath = $reportProcessor->generate($reportPath, $severities, $outcomeCollection);
+            $reportPath = $this->generateReports($config, $severities, $outcomeCollection, $featureFileProcessor);
             $displayProcessor->printSummary($outcomeCollection, $reportPath);
 
             if ($outcomeCollection->getCount() > 0) {
@@ -103,6 +99,31 @@ class Scan extends Command
         }
 
         return self::SUCCESS;
+    }
+
+    private function generateReports(
+        Entities\Config $config,
+        array $severities,
+        Entities\OutcomeCollection $outcomeCollection,
+        Processor\FeatureFileProcessor $featureFileProcessor
+    ): string {
+        $reportProcessorClass = $config->get('report_processor');
+        $htmlReportProcessor = new $reportProcessorClass(new Processor\HtmlProcessor(), $featureFileProcessor);
+        $reportPath = $htmlReportProcessor->generate(
+            $config->get('html_report_path'),
+            $severities,
+            $outcomeCollection
+        );
+
+        $reportProcessorClass = $config->get('json_report_processor');
+        $jsonReportProcessor = new $reportProcessorClass();
+        $jsonReportProcessor->generate(
+            $config->get('json_report_path'),
+            $severities,
+            $outcomeCollection
+        );
+
+        return $reportPath;
     }
 
     private static function error(OutputInterface $output, string $message, \Exception $e = null)

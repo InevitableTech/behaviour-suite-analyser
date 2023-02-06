@@ -20,7 +20,7 @@ Quick Installation:
 composer global require forceedge01/bdd-analyser
 ```
 
-Copy config.php file to root of project, setup includes the kind of files you want to scan and the rules you want applied.
+Initialise config file to root of project, setup includes the kind of files you want to scan and the rules you want applied.
 
 Example run:
 
@@ -50,8 +50,8 @@ Adding new rules is as simple as creating a new class and extending it from the 
 
 namespace MyApp\BddScriptRules;
 
-use Forceedge01\BDDStaticAnalyser\Entities;
-use Forceedge01\BDDStaticAnalyser\Rules;
+use Forceedge01\BDDStaticAnalyserRules\Entities;
+use Forceedge01\BDDStaticAnalyserRules\Rules;
 
 class MyRule extends Rules\BaseRule {
 

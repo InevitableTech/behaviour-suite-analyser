@@ -9,8 +9,14 @@ return [
 
     // Configure which class will process the outcomes and display the summary.
     'display_processor' => Forceedge01\BDDStaticAnalyser\Processor\DisplayProcessor::class,
+
+    // Html report generator.
     'report_processor' => Forceedge01\BDDStaticAnalyser\Processor\ReportProcessor::class,
     'html_report_path' => __DIR__ . '/build/report.html',
+
+    // Json report generator.
+    'json_report_processor' => Forceedge01\BDDStaticAnalyser\Processor\JsonProcessor::class,
+    'json_report_path' => __DIR__ . '/build/report.json',
 
     // Class => ?array
     'rules' => [
