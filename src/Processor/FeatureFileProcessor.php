@@ -109,7 +109,7 @@ class FeatureFileProcessor {
         );
     }
 
-    public function getScenarios($contents): array {
+    public function getScenarios(array $contents): array {
         $scenarios = [];
         $start = false;
         $startingIndex = 0;

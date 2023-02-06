@@ -6,6 +6,8 @@ use Forceedge01\BDDStaticAnalyser\Processor;
 
 class Scenario
 {
+    public $examples;
+
     public function __construct(int $lineNumber, array $scenario, bool $active = true)
     {
         $this->lineNumber = $lineNumber;
@@ -169,6 +171,10 @@ class Scenario
     }
 
     public function getExamples(array $scenario) {
+        if ($this->examples) {
+            return $this->examples;
+        }
+
         $examplesStart = false;
         $examples = [];
         foreach ($scenario as $step) {
@@ -181,7 +187,9 @@ class Scenario
             }
         }
 
-        return Processor\ArrayProcessor::cleanArray($examples);
+        $this->examples = Processor\ArrayProcessor::cleanArray($examples);
+
+        return $this->examples;
     }
 
     public function getTitle(): string {
