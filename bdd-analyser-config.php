@@ -1,6 +1,6 @@
 <?php
 
-use Forceedge01\BDDStaticAnalyser\Rules;
+use Forceedge01\BDDStaticAnalyserRules\Rules;
 
 return [
     // Parent directory where all feature files are present.

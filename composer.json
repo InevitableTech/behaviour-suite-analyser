@@ -20,7 +20,8 @@
     "require": {
         "composer-runtime-api": "^2.2",
         "php": "^7.1",
-        "symfony/console": "^5.4"
+        "symfony/console": "^5.4",
+        "forceedge01/bdd-analyser-rules": "^0.1"
     },
     "bin": ["bin/bdd-analyser"],
     "extra": {

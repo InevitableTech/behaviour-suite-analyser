@@ -2,8 +2,8 @@
 
 namespace Forceedge01\BDDStaticAnalyser\Processor;
 
-use Forceedge01\BDDStaticAnalyser\Rules;
-use Forceedge01\BDDStaticAnalyser\Entities;
+use Forceedge01\BDDStaticAnalyserRules\Rules;
+use Forceedge01\BDDStaticAnalyserRules\Entities;
 
 class RulesProcessor {
     private array $rules = [];

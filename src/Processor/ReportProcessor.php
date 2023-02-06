@@ -2,7 +2,7 @@
 
 namespace Forceedge01\BDDStaticAnalyser\Processor;
 
-use Forceedge01\BDDStaticAnalyser\Entities;
+use Forceedge01\BDDStaticAnalyserRules\Entities;
 
 class ReportProcessor implements ReportProcessorInterface {
     public function __construct(HtmlProcessor $html, FeatureFileProcessor $featureFileProcessor) {

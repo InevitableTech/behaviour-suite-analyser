@@ -4,8 +4,64 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "41d1fcfcec873d2afe6102323fa8b007",
+    "content-hash": "52737b3ca55ee6d3803809c964096e3f",
     "packages": [
+        {
+            "name": "forceedge01/bdd-analyser-rules",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/forceedge01/behaviour-suite-analyser-rules.git",
+                "reference": "4b3a20f2518b1b125758bfca878309e63169bd50"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/forceedge01/behaviour-suite-analyser-rules/zipball/4b3a20f2518b1b125758bfca878309e63169bd50",
+                "reference": "4b3a20f2518b1b125758bfca878309e63169bd50",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Forceedge01\\BDDStaticAnalyserRules\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Abdul Wahhab Qureshi (inevitabletech.uk)",
+                    "email": "its.inevitable@hotmail.com",
+                    "homepage": "https://inevitabletech.uk",
+                    "role": "lead dev"
+                }
+            ],
+            "description": "Rules for the bdd-analyser CLI tool",
+            "keywords": [
+                "bdd-analysis",
+                "behaviour-scripts",
+                "behaviour-suite",
+                "behaviour-tests",
+                "cli",
+                "command-line",
+                "lint",
+                "static-analysis",
+                "test-automation"
+            ],
+            "support": {
+                "issues": "https://github.com/forceedge01/behaviour-suite-analyser-rules/issues",
+                "source": "https://github.com/forceedge01/behaviour-suite-analyser-rules/tree/0.1.0"
+            },
+            "time": "2023-02-06T12:22:49+00:00"
+        },
         {
             "name": "psr/container",
             "version": "1.1.2",

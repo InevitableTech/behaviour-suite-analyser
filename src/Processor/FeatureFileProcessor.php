@@ -2,7 +2,7 @@
 
 namespace Forceedge01\BDDStaticAnalyser\Processor;
 
-use Forceedge01\BDDStaticAnalyser\Entities;
+use Forceedge01\BDDStaticAnalyserRules\Entities;
 
 class FeatureFileProcessor {
     private array $fileObjectLibrary = [];

@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Forceedge01\BDDStaticAnalyser\Processor;
-use Forceedge01\BDDStaticAnalyser\Entities;
+use Forceedge01\BDDStaticAnalyserRules\Entities;
 
 class Initialise extends Command {
     public function configure() {

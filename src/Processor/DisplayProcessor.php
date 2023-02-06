@@ -2,7 +2,7 @@
 
 namespace Forceedge01\BDDStaticAnalyser\Processor;
 
-use Forceedge01\BDDStaticAnalyser\Entities;
+use Forceedge01\BDDStaticAnalyserRules\Entities;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class DisplayProcessor implements DisplayProcessorInterface {
