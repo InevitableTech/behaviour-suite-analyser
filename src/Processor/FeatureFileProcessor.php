@@ -80,7 +80,7 @@ class FeatureFileProcessor
             }
         }
 
-        return new Entities\Feature(ArrayProcessor::reIndexArray($feature));
+        return new Entities\Feature($featureDeclarationBlockIndex + 1, ArrayProcessor::reIndexArray($feature));
     }
 
     public function getBackground(array $contents): ?Entities\Background

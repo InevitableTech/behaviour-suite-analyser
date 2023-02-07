@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "forceedge01/bdd-analyser-rules",
-            "version": "0.2.0",
+            "version": "0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/forceedge01/behaviour-suite-analyser-rules.git",
-                "reference": "6f828fb82808e6b17fa2076915209d1b15cbb091"
+                "reference": "30265968af30644a2874aaabf2d3193c6e82946a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/forceedge01/behaviour-suite-analyser-rules/zipball/6f828fb82808e6b17fa2076915209d1b15cbb091",
-                "reference": "6f828fb82808e6b17fa2076915209d1b15cbb091",
+                "url": "https://api.github.com/repos/forceedge01/behaviour-suite-analyser-rules/zipball/30265968af30644a2874aaabf2d3193c6e82946a",
+                "reference": "30265968af30644a2874aaabf2d3193c6e82946a",
                 "shasum": ""
             },
             "require": {
@@ -58,9 +58,9 @@
             ],
             "support": {
                 "issues": "https://github.com/forceedge01/behaviour-suite-analyser-rules/issues",
-                "source": "https://github.com/forceedge01/behaviour-suite-analyser-rules/tree/0.2.0"
+                "source": "https://github.com/forceedge01/behaviour-suite-analyser-rules/tree/0.2.1"
             },
-            "time": "2023-02-06T23:16:41+00:00"
+            "time": "2023-02-07T10:20:07+00:00"
         },
         {
             "name": "psr/container",
