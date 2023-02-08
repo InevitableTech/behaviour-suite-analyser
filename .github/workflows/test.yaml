@@ -1,0 +1,12 @@
+name: run-unit-tests
+run-name: Run unit tests.
+on: [push]
+jobs:
+  unit-test-bdd-analyser:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-php@v3
+      - uses: php-actions/composer@v6
+      - run: composer install
+      - run: ./vendor/bin/phpunit tests
