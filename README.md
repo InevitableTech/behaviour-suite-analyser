@@ -37,6 +37,12 @@ Configure the config.php file with the extension of the files that contain the c
     'feature_file_extension' => 'feature',
 ```
 
+Major change
+-----
+
+- PHP version 7.1 compatible.
+- Inception of tool.
+
 Development
 -----
 
