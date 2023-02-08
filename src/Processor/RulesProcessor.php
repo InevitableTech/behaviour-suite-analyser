@@ -9,9 +9,9 @@ use Forceedge01\BDDStaticAnalyserRules\Entities;
 
 class RulesProcessor
 {
-    private array $rules = [];
-    private array $ruleObjects = [];
-    private array $outcome = [];
+    private $rules = [];
+    private $ruleObjects = [];
+    private $outcome = [];
 
     public function __construct(array $rules)
     {
