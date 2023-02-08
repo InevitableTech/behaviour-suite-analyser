@@ -31,6 +31,10 @@ class DisplayProcessor implements DisplayProcessorInterface
         $this->output->writeln('<info>Outcomes');
         $this->output->writeln('----</info>');
 
+        if (count($items) == 0) {
+            $this->output->writeln(PHP_EOL . '<comment>No violations detected.</comment>');
+        }
+
         foreach ($items as $file => $outcomeCollection) {
             $violationsCount = count($outcomeCollection);
             $this->output->writeln(PHP_EOL . "<comment>-- $file</comment>: (<error>$violationsCount Violations</error>)" . PHP_EOL);
@@ -48,19 +52,22 @@ class DisplayProcessor implements DisplayProcessorInterface
         $this->output->write(PHP_EOL);
         $this->output->writeln('<info>Summary');
         $this->output->writeln('----</info>');
+        $errorOrSuccess = $violationsCount > 0 ? 'error' : 'info';
 
         $this->output->writeln(
-            'Violations: <error>' . $violationsCount . '</error>, ' .
+            "Violations: <$errorOrSuccess>$violationsCount</$errorOrSuccess>, " .
             "files: {$outcomes->summary['files']}, " .
             "backgrounds: {$outcomes->getSummaryCount('backgrounds')}, " .
             "scenarios: {$outcomes->getSummaryCount('scenarios')}, " .
             "activeSteps: {$outcomes->getSummaryCount('activeSteps')}, " .
-            "activeRules: {$outcomes->getSummaryCount('activeRules')}"
+            "activeRules: {$outcomes->getSummaryCount('activeRules')}."
         );
 
-        $this->output->writeln(
-            'Most violated rules: ' . ArrayProcessor::implodeWithKeys(array_slice($violationsByRule, 0, 3), ': ', ', ')
-        );
+        if ($violationsCount) {
+            $this->output->writeln(
+                'Most violated rules: ' . ArrayProcessor::implodeWithKeys(array_slice($violationsByRule, 0, 3), ': ', ', ')
+            );
+        }
 
         $this->output->writeln('Html report generated: <comment>file://' . realpath($reportPath) . '</comment>' . PHP_EOL);
     }

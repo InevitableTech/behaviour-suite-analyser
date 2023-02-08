@@ -24,7 +24,7 @@ class ReportProcessor implements ReportProcessorInterface
         $issuesToReport = count($items);
         $ruleItems = ArrayProcessor::sortByRule($items);
         $items = ArrayProcessor::sortByFile($items);
-        $filesCount = count($items);
+        $filesCount = $collection->getSummary('files');
         $items = ArrayProcessor::sortInternalArrayBy($items, 'lineNumber', SORT_ASC);
         $severitiesString = implode(', ', $severities);
 
