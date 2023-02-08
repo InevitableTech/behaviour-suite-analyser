@@ -37,7 +37,7 @@ class Scan extends Command
 
             if ($displayRules) {
                 $output->writeln('Active rules: ' . print_r($config->get('rules'), true));
-                return self::SUCCESS;
+                return 0;
             }
 
             $displayProcessorClass = $config->get('display_processor');
@@ -91,14 +91,14 @@ class Scan extends Command
             $displayProcessor->printSummary($outcomeCollection, $reportPath);
 
             if ($outcomeCollection->getCount() > 0) {
-                return self::FAILURE;
+                return 1;
             }
         } catch (Exception $e) {
             self::error($output, $e->getMessage());
-            return self::FAILURE;
+            return 1;
         }
 
-        return self::SUCCESS;
+        return 0;
     }
 
     private function generateReports(
