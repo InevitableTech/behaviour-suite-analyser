@@ -6,7 +6,9 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-php@v3
-      - uses: php-actions/composer@v6
+      - uses: actions/setup-php@v2
+        with:
+          php-version: '7.1'
+          tools: composer
       - run: composer install
       - run: ./vendor/bin/phpunit tests
