@@ -1,7 +1,7 @@
 Description
 ====
 
-Perform static analysis on your cucumber/gherkin styles bdd scripts and remediate issues that will prolong the life your test suite.
+Perform static analysis on your gherkin scripts and remediate issues that will prolong the life your test suite.
 
 This tool is meant to be language agnostic (even though written in PHP7) and expected to work with any cucumber/gherkin style files.
 
