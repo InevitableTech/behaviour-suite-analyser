@@ -10,5 +10,6 @@ jobs:
         with:
           php-version: '7.1'
           tools: composer
+      - run: rm composer.lock
       - run: composer install
       - run: ./vendor/bin/phpunit tests
