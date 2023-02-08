@@ -8,7 +8,7 @@ use Forceedge01\BDDStaticAnalyserRules\Entities;
 
 class FeatureFileProcessor
 {
-    private array $fileObjectLibrary = [];
+    private $fileObjectLibrary = [];
 
     public function getFileContent(string $file): Entities\FeatureFileContents
     {
