@@ -6,6 +6,9 @@ install:
 update:
 	docker-compose run php-test sh -c "composer update"
 
+global-install:
+	docker-compose run php-test sh -c "php -v && composer global require forceedge01/bdd-analyser"
+
 .PHONY: tests
 tests:
 	docker-compose run php-test sh -c "php -v && ./vendor/bin/phpunit tests"
