@@ -3,6 +3,9 @@ install:
 	docker-compose run php7.1-test sh -c "cd testproject && composer install"
 	docker-compose run php7.1-test sh -c "cd vendor/forceedge01/bdd-analyser-rules && composer install"
 
+global-install:
+	docker-compose run php7.1-test sh -c "php -v && composer global require forceedge01/bdd-analyser"
+
 update:
 	docker-compose run php7.1-test sh -c "composer update"
 
