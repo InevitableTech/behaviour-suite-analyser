@@ -37,6 +37,11 @@ Configure the config.php file with the extension of the files that contain the c
     'feature_file_extension' => 'feature',
 ```
 
+Major change
+-----
+
+- PHP version 8.0 compatible.
+
 Development
 -----
 
