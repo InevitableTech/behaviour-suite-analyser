@@ -1,5 +1,5 @@
 {
-    "name": "forceedge01/bdd-analyser",
+    "name": "genesis/bdd-analyser",
     "description": "Analyse bdd scripts and find issues with detailed information and how to address these issues to prolong the longevitiy of your behaviour suite",
     "type": "library",
     "license": "MIT",
