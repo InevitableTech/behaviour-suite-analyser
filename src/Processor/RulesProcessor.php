@@ -6,6 +6,7 @@ namespace Forceedge01\BDDStaticAnalyser\Processor;
 
 use Forceedge01\BDDStaticAnalyserRules\Rules;
 use Forceedge01\BDDStaticAnalyserRules\Entities;
+use UnexpectedValueException;
 
 class RulesProcessor
 {
@@ -28,9 +29,12 @@ class RulesProcessor
         $collection->summary['files']++;
         $collection->summary['activeRules'] = $this->rules;
 
-        foreach ($this->rules as $ruleClass => $params) {
+        foreach ($this->rules as $ruleDetails) {
             try {
-                $rule = $this->getRule($ruleClass, $params);
+                $ruleClass = $this->getRuleClass($ruleDetails);
+                $ruleArgs = $this->getRuleArgs($ruleDetails);
+
+                $rule = $this->getRule($ruleClass, $ruleArgs);
                 $rule->beforeApply($contentObject->filePath, $collection);
                 $this->outcome[] = $this->applyRule($contentObject, $rule, $collection);
             } catch (\Exception $e) {
@@ -45,6 +49,26 @@ class RulesProcessor
         }
 
         return $collection;
+    }
+
+    private function getRuleClass($ruleDetails): string
+    {
+        return is_array($ruleDetails) ? key($ruleDetails) : $ruleDetails;
+    }
+
+    private function getRuleArgs($ruleDetails): array
+    {
+        if (is_string($ruleDetails)) {
+            return [];
+        }
+
+        $key = key($ruleDetails);
+
+        if (!isset($ruleDetails[$key]['args'])) {
+            throw new UnexpectedValueException('Expected to receive args in array format.');
+        }
+
+        return $ruleDetails[$key]['args'];
     }
 
     public function getRule(string $rule, array $params = null): Rules\RuleInterface

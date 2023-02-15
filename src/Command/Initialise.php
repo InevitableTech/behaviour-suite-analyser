@@ -17,6 +17,7 @@ class Initialise extends Command
     public function configure()
     {
         $this->setName('initialise');
+        $this->setAliases(['init']);
         $this->setDescription('Initiliase a local config file');
     }
 

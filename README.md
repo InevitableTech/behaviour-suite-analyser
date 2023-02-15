@@ -1,13 +1,17 @@
 Description
 ====
 
-Perform static analysis on your gherkin scripts and remediate issues that will prolong the life your test suite.
+Perform static analysis on your cucumber/gherkin styles bdd scripts and remediate issues that will prolong the life your test suite.
 
 This tool is meant to be language agnostic (even though written in PHP7) and expected to work with any cucumber/gherkin style files.
 
 Here is an example of a basic run:
 
 ![Run](https://raw.githubusercontent.com/forceedge01/behaviour-suite-analyser/master/extras/bdd-analyser.png#version=1)
+
+Html report:
+
+![Run](https://raw.githubusercontent.com/forceedge01/behaviour-suite-analyser/master/extras/report.png#version=1)
 
 Install
 ====
@@ -25,22 +29,23 @@ Initialise config file to root of project, setup includes the kind of files you 
 Example run:
 
 ```bash
-bdd-analyser initialise
+bdd-analyser init
 bdd-analyser scan . --config=.
 ```
 
 The above command will lint the features folder.
 
-Configure the config.php file with the extension of the files that contain the cucumber/gherkin scripts.
+Configure the bdd-analyser-config.yaml file with the extension of the files that contain the cucumber/gherkin scripts.
 
-```php
-    'feature_file_extension' => 'feature',
+```yaml
+    feature_file_extension: feature
 ```
 
 Major change
 -----
 
-- PHP version 8.0 compatible.
+- PHP version 7.1 compatible.
+- Inception of tool.
 
 Development
 -----
@@ -63,14 +68,12 @@ class MyRule extends Rules\BaseRule {
 }
 ```
 
-Then simply add your new class to the config.php rules array.
+Then simply add your new class to the bdd-analyser-config.yaml rules array.
 
-```php
+```yaml
     ...
-    'rules' => [
+    rules:
         ...
-        MyApp\BddScriptRules\MyRule::class => null,
-        ...
-    ]
+        - MyApp\BddScriptRules\MyRule
     ...
 ```
