@@ -18,6 +18,7 @@ final class RuleProcessorTest extends TestCase
     public function testApplyRulesStringClass()
     {
         $contentObject = $this->createMock(Entities\FeatureFileContents::class);
+        $contentObject->background = '';
         $contentObject->filePath = '/a/file/path';
         $contentObject->scenarios = [];
         $collection = $this->createMock(Entities\OutcomeCollection::class);
@@ -35,6 +36,7 @@ final class RuleProcessorTest extends TestCase
             ->willReturn([]);
 
         $contentObject = $this->createMock(Entities\FeatureFileContents::class);
+        $contentObject->background = '';
         $contentObject->filePath = '/a/file/path';
         $contentObject->scenarios = [
             $scenario
@@ -71,6 +73,7 @@ final class RuleProcessorTest extends TestCase
             ]);
 
         $contentObject = $this->createMock(Entities\FeatureFileContents::class);
+        $contentObject->background = '';
         $contentObject->filePath = '/a/file/path';
         $contentObject->scenarios = [
             $scenario
@@ -110,6 +113,7 @@ final class RuleProcessorTest extends TestCase
         $contentObject = $this->createMock(Entities\FeatureFileContents::class);
         $contentObject->filePath = '/a/file/path';
         $contentObject->background = $this->createMock(Entities\Background::class);
+        $contentObject->background->lineNumber = 14;
         $contentObject->scenarios = [
             $scenario
         ];
