@@ -1,0 +1,45 @@
+# This file is meant to be checked in with your project to be applied consistently by whoever contributes to the project.
+config:
+    # Specify the extensions to scan.
+    feature_file_extension: feature
+
+    # Configure which class will process the outcomes and display the summary.
+    display_processor: Forceedge01\BDDStaticAnalyser\Processor\DisplayProcessor
+
+    # Html report generator.
+    enable_html_report: true
+    report_processor: Forceedge01\BDDStaticAnalyser\Processor\ReportProcessor
+    html_report_path: <relative_path>/build/report.html
+
+    # Json report generator.
+    enable_json_report: false
+    json_report_processor: Forceedge01\BDDStaticAnalyser\Processor\JsonProcessor
+    json_report_path: <relative_path>/build/report.json
+
+    # Path to the rule classes, add your own in here.
+    rules:
+        - Forceedge01\BDDStaticAnalyserRules\Rules\NoUrlInSteps
+        - Forceedge01\BDDStaticAnalyserRules\Rules\NoLongScenarios:
+            args: [10]
+        - Forceedge01\BDDStaticAnalyserRules\Rules\NoCommentedOutSteps
+        # Forceedge01\BDDStaticAnalyserRules\Rules\UnsupportedTags:
+        #    args: ['@dev', '@wip']
+        - Forceedge01\BDDStaticAnalyserRules\Rules\DiscouragedTags
+        - Forceedge01\BDDStaticAnalyserRules\Rules\OnlyValidOrderAllowed
+        - Forceedge01\BDDStaticAnalyserRules\Rules\NoSelectorsInSteps
+        - Forceedge01\BDDStaticAnalyserRules\Rules\OnlyFirstPersonLanguageAllowed:
+            args: ['given', 'when', 'then', 'and', 'but']
+        - Forceedge01\BDDStaticAnalyserRules\Rules\NotTooManyScenariosPerFeature:
+            args: [10]
+        - Forceedge01\BDDStaticAnalyserRules\Rules\NotTooManyExamplesPerScenario:
+            args: [3]
+        - Forceedge01\BDDStaticAnalyserRules\Rules\NoDuplicateScenarios
+        - Forceedge01\BDDStaticAnalyserRules\Rules\NoScenarioWithoutDescription
+        - Forceedge01\BDDStaticAnalyserRules\Rules\NoFeatureWithoutNarrative
+        - Forceedge01\BDDStaticAnalyserRules\Rules\AllStepsInlineEachFile
+        - Forceedge01\BDDStaticAnalyserRules\Rules\AllScenariosInlineEachFile
+        - Forceedge01\BDDStaticAnalyserRules\Rules\MinimumLengthScenario:
+            args: [2]
+        - Forceedge01\BDDStaticAnalyserRules\Rules\NoEmptyFeature
+        - Forceedge01\BDDStaticAnalyserRules\Rules\NoConjunctionInSteps
+        - Forceedge01\BDDStaticAnalyserRules\Rules\NoScenarioWithoutAssertion
