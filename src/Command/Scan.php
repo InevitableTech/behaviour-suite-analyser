@@ -19,6 +19,7 @@ class Scan extends Command
     public function configure()
     {
         $this->setName('scan');
+        $this->setAliases(['lint']);
         $this->setDescription('Analyse BDD script files and find violations based on rules enabled in the config file');
         $this->addArgument('directory', InputArgument::REQUIRED, 'Directory to scan');
         $this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Path to config file', DEFAULT_CONFIG_PATH . Entities\Config::DEFAULT_NAME);
