@@ -98,6 +98,7 @@ final class RuleProcessorTest extends TestCase
             ->method('getStepDefinition');
 
         $scenario = $this->createMock(Entities\Scenario::class);
+        $scenario->lineNumber = 123;
         $scenario->expects($this->once())
             ->method('getSteps')
             ->willReturn([
