@@ -20,7 +20,8 @@
     "require": {
         "php": "^7.1",
         "symfony/console": "^4.0",
-        "forceedge01/bdd-analyser-rules": "^1.0"
+        "forceedge01/bdd-analyser-rules": "^1.0",
+        "symfony/yaml": "^4.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^7"

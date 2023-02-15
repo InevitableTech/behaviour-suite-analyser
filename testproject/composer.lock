@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3c1062007039a1721a10d25d38a66bf6",
+    "content-hash": "e8c63acc152e44de3b883baec5fe17cf",
     "packages": [],
     "packages-dev": [
         {
@@ -203,6 +203,130 @@
                 "source": "https://github.com/Behat/Transliterator/tree/v1.4.0"
             },
             "time": "2022-03-30T09:16:18+00:00"
+        },
+        {
+            "name": "forceedge01/bdd-analyser",
+            "version": "1.3.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/forceedge01/behaviour-suite-analyser.git",
+                "reference": "5b33b494a53c8b52e8342e508537c5461c31c41a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/forceedge01/behaviour-suite-analyser/zipball/5b33b494a53c8b52e8342e508537c5461c31c41a",
+                "reference": "5b33b494a53c8b52e8342e508537c5461c31c41a",
+                "shasum": ""
+            },
+            "require": {
+                "forceedge01/bdd-analyser-rules": "^1.0",
+                "php": "^7.1",
+                "symfony/console": "^4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7"
+            },
+            "bin": [
+                "bin/bdd-analyser"
+            ],
+            "type": "library",
+            "extra": {
+                "scripts": {
+                    "post-install-cmd": [
+                        "chmod +x bin/bdd-analyser"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Forceedge01\\BDDStaticAnalyser\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Abdul Wahhab Qureshi (inevitabletech.uk)",
+                    "email": "its.inevitable@hotmail.com",
+                    "homepage": "https://inevitabletech.uk",
+                    "role": "lead dev"
+                }
+            ],
+            "description": "Analyse bdd scripts and find issues with detailed information and how to address these issues to prolong the longevitiy of your behaviour suite",
+            "keywords": [
+                "bdd-analysis",
+                "behaviour-scripts",
+                "behaviour-suite",
+                "behaviour-tests",
+                "cli",
+                "command-line",
+                "lint",
+                "static-analysis",
+                "test-automation"
+            ],
+            "support": {
+                "issues": "https://github.com/forceedge01/behaviour-suite-analyser/issues",
+                "source": "https://github.com/forceedge01/behaviour-suite-analyser/tree/1.3.6"
+            },
+            "time": "2023-02-10T17:59:28+00:00"
+        },
+        {
+            "name": "forceedge01/bdd-analyser-rules",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/forceedge01/behaviour-suite-analyser-rules.git",
+                "reference": "d951777db32ee042900ef0e38899b771b01bfeb7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/forceedge01/behaviour-suite-analyser-rules/zipball/d951777db32ee042900ef0e38899b771b01bfeb7",
+                "reference": "d951777db32ee042900ef0e38899b771b01bfeb7",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Forceedge01\\BDDStaticAnalyserRules\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Abdul Wahhab Qureshi (inevitabletech.uk)",
+                    "email": "its.inevitable@hotmail.com",
+                    "homepage": "https://inevitabletech.uk",
+                    "role": "lead dev"
+                }
+            ],
+            "description": "Rules for the bdd-analyser CLI tool",
+            "keywords": [
+                "bdd-analysis",
+                "behaviour-scripts",
+                "behaviour-suite",
+                "behaviour-tests",
+                "cli",
+                "command-line",
+                "lint",
+                "static-analysis",
+                "test-automation"
+            ],
+            "support": {
+                "issues": "https://github.com/forceedge01/behaviour-suite-analyser-rules/issues",
+                "source": "https://github.com/forceedge01/behaviour-suite-analyser-rules/tree/1.0.0"
+            },
+            "time": "2023-02-08T12:07:23+00:00"
         },
         {
             "name": "psr/container",
