@@ -69,7 +69,9 @@ class DisplayProcessor implements DisplayProcessorInterface
             );
         }
 
-        $this->output->writeln('Html report generated: <comment>file://' . realpath($reportPath) . '</comment>' . PHP_EOL);
+        if ($reportPath) {
+            $this->output->writeln('Html report generated: <comment>file://' . realpath($reportPath) . '</comment>' . PHP_EOL);
+        }
     }
 
     private function displaySingleOutcomeSummary(int $itemNumber, Entities\Outcome $outcome, OutputInterface $output)

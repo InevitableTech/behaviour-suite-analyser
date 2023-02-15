@@ -1,5 +1,6 @@
 {
     "require-dev": {
-        "behat/behat": "^3.0"
+        "behat/behat": "^3.0",
+        "forceedge01/bdd-analyser": "^1.0"
     }
 }
