@@ -44,8 +44,7 @@ Configure the bdd-analyser-config.yaml file with the extension of the files that
 Major change
 -----
 
-- PHP version 7.1 compatible.
-- Inception of tool.
+- PHP version 8.0 compatible.
 
 Development
 -----
