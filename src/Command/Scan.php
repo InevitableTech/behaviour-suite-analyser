@@ -12,12 +12,14 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Forceedge01\BDDStaticAnalyser\Processor;
 use Forceedge01\BDDStaticAnalyserRules\Entities;
+use Symfony\Component\Yaml\Yaml;
 
 class Scan extends Command
 {
     public function configure()
     {
         $this->setName('scan');
+        $this->setAliases(['lint']);
         $this->setDescription('Analyse BDD script files and find violations based on rules enabled in the config file');
         $this->addArgument('directory', InputArgument::REQUIRED, 'Directory to scan');
         $this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Path to config file', DEFAULT_CONFIG_PATH . Entities\Config::DEFAULT_NAME);
@@ -33,7 +35,8 @@ class Scan extends Command
             $configFile = $input->getOption('config');
             $displayRules = $input->getOption('rules');
 
-            $config = new Entities\Config($configFile);
+            $configPath = Entities\Config::getValidConfigPath($configFile);
+            $config = new Entities\Config($configPath, Yaml::parseFile($configPath));
 
             if ($displayRules) {
                 $output->writeln('Active rules: ' . print_r($config->get('rules'), true));
@@ -107,21 +110,27 @@ class Scan extends Command
         Entities\OutcomeCollection $outcomeCollection,
         Processor\FeatureFileProcessor $featureFileProcessor
     ): string {
-        $reportProcessorClass = $config->get('report_processor');
-        $htmlReportProcessor = new $reportProcessorClass(new Processor\HtmlProcessor(), $featureFileProcessor);
-        $reportPath = $htmlReportProcessor->generate(
-            $config->get('html_report_path'),
-            $severities,
-            $outcomeCollection
-        );
+        $reportPath = '';
 
-        $reportProcessorClass = $config->get('json_report_processor');
-        $jsonReportProcessor = new $reportProcessorClass();
-        $jsonReportProcessor->generate(
-            $config->get('json_report_path'),
-            $severities,
-            $outcomeCollection
-        );
+        if ($config->get('enable_html_report')) {
+            $reportProcessorClass = $config->get('report_processor');
+            $htmlReportProcessor = new $reportProcessorClass(new Processor\HtmlProcessor(), $featureFileProcessor);
+            $reportPath = $htmlReportProcessor->generate(
+                $config->getPath('html_report_path'),
+                $severities,
+                $outcomeCollection
+            );
+        }
+
+        if ($config->get('enable_json_report')) {
+            $reportProcessorClass = $config->get('json_report_processor');
+            $jsonReportProcessor = new $reportProcessorClass();
+            $jsonReportProcessor->generate(
+                $config->getPath('json_report_path'),
+                $severities,
+                $outcomeCollection
+            );
+        }
 
         return $reportPath;
     }
