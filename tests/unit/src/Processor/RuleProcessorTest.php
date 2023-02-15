@@ -31,6 +31,7 @@ final class RuleProcessorTest extends TestCase
     public function testApplyRulesStringClassWithScenariosWithNoSteps()
     {
         $scenario = $this->createMock(Entities\Scenario::class);
+        $scenario->lineNumber = 49;
         $scenario->expects($this->once())
             ->method('getSteps')
             ->willReturn([]);
@@ -64,6 +65,7 @@ final class RuleProcessorTest extends TestCase
             ->method('getStepDefinition');
 
         $scenario = $this->createMock(Entities\Scenario::class);
+        $scenario->lineNumber = 49;
         $scenario->expects($this->once())
             ->method('getSteps')
             ->willReturn([
