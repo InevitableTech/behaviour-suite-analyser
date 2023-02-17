@@ -1,4 +1,4 @@
-Description
+Introduction
 ====
 
 Perform static analysis on your cucumber/gherkin styles bdd scripts and remediate issues that will prolong the life your test suite.
