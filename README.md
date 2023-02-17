@@ -13,6 +13,10 @@ Html report:
 
 ![Run](https://raw.githubusercontent.com/forceedge01/behaviour-suite-analyser/master/extras/report.png#version=1)
 
+- Summary of analysis.
+- Segmented data view.
+- Track your fixes as you resolve them.
+
 Install
 ====
 
