@@ -12,9 +12,13 @@ config:
     html_report_path: <relative_path>/build/report.html
 
     # Json report generator.
-    enable_json_report: false
+    enable_json_report: true
     json_report_processor: Forceedge01\BDDStaticAnalyser\Processor\JsonProcessor
     json_report_path: <relative_path>/build/report.json
+
+    # Use the bdd-analyser web console platform to view reports and guage health of your test pack.
+    web_console_report: false
+    api_key: 'averysecrettokenforapiauthorization=='
 
     # Path to the rule classes, add your own in here.
     rules:
