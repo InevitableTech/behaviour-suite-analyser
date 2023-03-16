@@ -13,6 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Forceedge01\BDDStaticAnalyser\Processor;
 use Forceedge01\BDDStaticAnalyserRules\Entities;
 use Symfony\Component\Yaml\Yaml;
+use GuzzleHttp\Client;
 
 class Scan extends Command
 {
@@ -92,6 +93,17 @@ class Scan extends Command
             $displayProcessor->displayOutcomes($outcomeCollection, $severities);
             $reportPath = $this->generateReports($config, $severities, $outcomeCollection, $featureFileProcessor);
             $displayProcessor->printSummary($outcomeCollection, $reportPath);
+
+            // Send the report off.
+            if ($config->get('web_console_report')) {
+                $webConsole = new Processor\WebConsoleProcessor($config->get('api_key'), new Client());
+                $analysisId = $webConsole->sendAnalysis(
+                    clone $outcomeCollection,
+                    $severities
+                );
+
+                $webConsole->printConsoleLink($output, $webConsole->getCred('project_id'), $analysisId);
+            }
 
             if ($outcomeCollection->getCount() > 0) {
                 return 1;

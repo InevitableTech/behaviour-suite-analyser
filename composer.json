@@ -21,7 +21,8 @@
         "php": "^8.0",
         "symfony/console": "^5.0",
         "forceedge01/bdd-analyser-rules": "^2.0",
-        "symfony/yaml": "^6.0"
+        "symfony/yaml": "^6.0",
+        "guzzlehttp/guzzle": "^7.5"
     },
     "require-dev": {
         "phpunit/phpunit": "^9"

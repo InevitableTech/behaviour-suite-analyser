@@ -13,9 +13,20 @@ class JsonProcessor implements ReportProcessorInterface
         array $severities,
         Entities\OutcomeCollection $outcomeCollection
     ): string {
-        $outcomeCollection->severities = $severities;
+        $activeRules = ArrayProcessor::cleanArray($outcomeCollection->getSummary('activeRules'));
+        $activeSteps = ArrayProcessor::cleanArray($outcomeCollection->getSummary('activeSteps'));
+        unset($outcomeCollection->summary['activeRules']);
+        unset($outcomeCollection->summary['activeSteps']);
 
-        $json = json_encode($outcomeCollection);
+        $output = [
+            'severities' => $severities,
+            'summary' => $outcomeCollection->summary,
+            'active_steps' => $activeSteps,
+            'active_rules' => $activeRules,
+            'violations' => $outcomeCollection->getItems()
+        ];
+
+        $json = json_encode($output);
 
         file_put_contents($reportPath, $json);
 

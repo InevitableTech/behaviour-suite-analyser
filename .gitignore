@@ -1,3 +1,4 @@
 vendor
 testproject/vendor
 build
+bdd-analyser-config-dev.yaml
