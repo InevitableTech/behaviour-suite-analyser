@@ -16,10 +16,6 @@ config:
     json_report_processor: Forceedge01\BDDStaticAnalyser\Processor\JsonProcessor
     json_report_path: <relative_path>/build/report.json
 
-    # Use the bdd-analyser web console platform to view reports and guage health of your test pack.
-    web_console_report: true
-    api_key: 'averysecrettokenforapiauthorization=='
-
     # Path to the rule classes, add your own in here.
     rules:
         - Forceedge01\BDDStaticAnalyserRules\Rules\NoUrlInSteps

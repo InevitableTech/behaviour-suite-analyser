@@ -38,7 +38,7 @@ class RegisterCreds extends BaseCommand
         $token = $this->ask('Enter user token: ', $input, $output, null, true);
 
         if (! $token) {
-            throw new Exception('Unable to generate a token.');
+            throw new Exception('You must provide a token, generate a token from the remote bdd analyser web console.');
         }
 
         $defaultProjectName = basename(getcwd());
