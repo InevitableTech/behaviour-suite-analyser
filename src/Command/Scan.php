@@ -97,15 +97,12 @@ class Scan extends Command
             // Send the report off.
             if ($config->get('web_console_report')) {
                 $webConsole = new Processor\WebConsoleProcessor($config->get('api_key'), new Client());
-                $tokenDetails = $webConsole->getTokenDetails();
                 $analysisId = $webConsole->sendAnalysis(
-                    $outcomeCollection,
-                    $severities,
-                    $tokenDetails['userToken'],
-                    $tokenDetails['projectId']
+                    clone $outcomeCollection,
+                    $severities
                 );
 
-                $webConsole->printConsoleLink($output, $tokenDetails['projectId'], $analysisId);
+                $webConsole->printConsoleLink($output, $webConsole->getCred('project_id'), $analysisId);
             }
 
             if ($outcomeCollection->getCount() > 0) {
@@ -133,7 +130,7 @@ class Scan extends Command
             $reportPath = $htmlReportProcessor->generate(
                 $config->getPath('html_report_path'),
                 $severities,
-                $outcomeCollection
+                clone $outcomeCollection
             );
         }
 
@@ -143,7 +140,7 @@ class Scan extends Command
             $jsonReportProcessor->generate(
                 $config->getPath('json_report_path'),
                 $severities,
-                $outcomeCollection
+                clone $outcomeCollection
             );
         }
 

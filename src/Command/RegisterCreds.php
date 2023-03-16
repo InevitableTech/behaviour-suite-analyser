@@ -15,7 +15,7 @@ use Forceedge01\BDDStaticAnalyserRules\Entities;
 use Forceedge01\BDDStaticAnalyser\Processor;
 use GuzzleHttp\Client;
 
-class GenerateUserToken extends BaseCommand
+class RegisterCreds extends BaseCommand
 {
     public function __construct()
     {
@@ -25,7 +25,7 @@ class GenerateUserToken extends BaseCommand
 
     public function configure()
     {
-        $this->setName('token:generate');
+        $this->setName('token:register');
         $this->setDescription('Generate and store a user token to authenticate against the web console platform.');
         $this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Path to config file', DEFAULT_CONFIG_PATH . Entities\Config::DEFAULT_NAME);
     }
@@ -35,33 +35,31 @@ class GenerateUserToken extends BaseCommand
         // Get necessary user details.
         $output->writeln('<info>Generating a user token will allow you send reports to the web console to track your automation suite results history and track its health.</info>');
 
-        $firstname = $this->ask('Your first name: ', $input, $output);
-        $lastname = $this->ask('Your last name: ', $input, $output);
-        $email = $this->ask('Your email: ', $input, $output);
+        $token = $this->ask('Enter user token: ', $input, $output, null, true);
+
+        if (! $token) {
+            throw new Exception('Unable to generate a token.');
+        }
 
         $defaultProjectName = basename(getcwd());
         $projectName = $this->ask('Project name [default]: ', $input, $output, $defaultProjectName);
 
         $output->writeln('');
-        $output->writeln('<info>Registering details for token...</info>');
+        $output->writeln('<info>Creating project...</info>');
         $output->writeln('');
 
         $config = $this->getConfig($input->getOption('config'));
         $console = new Processor\WebConsoleProcessor($config->get('api_key'), new Client());
-        $userId = $console->createUser($firstname, $lastname, $email);
+        $console->setToken($token);
 
-        if (! $userId) {
-            throw new Exception('Unable to register user.');
-        }
+        $userId = $console->getUserId();
+        $projectId = $console->createProject($projectName, $userId);
 
-        $token = $console->createToken($userId);
-
-        if (! $token) {
-            throw new Exception('Unable to generate a token. ');
-        }
-
-        $projectId = $console->createProject($token, $projectName, $userId);
-        $path = $console->saveTokenDetails($token, $projectId);
+        $path = $console->saveCreds([
+            'user_token' => $token,
+            'project_id' => $projectId,
+            'user_id' => $userId
+        ]);
 
         $output->writeln('<comment>Token saved: ' . $path . '</comment>');
     }

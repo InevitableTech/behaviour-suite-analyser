@@ -21,9 +21,11 @@ class BaseCommand extends Command
         return new Entities\Config($configPath, Yaml::parseFile($configPath));
     }
 
-    protected function ask(string $question, $input, $output, string $default = null): string
+    protected function ask(string $question, $input, $output, string $default = null, $hidden = false): string
     {
         $question = new Question(str_replace('[default]', '[' . $default . ']', $question), $default);
+        $question->setHidden($hidden);
+
         $answer = $this->getHelper('question')->ask($input, $output, $question);
 
         return $answer;

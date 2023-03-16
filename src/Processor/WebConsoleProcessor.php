@@ -11,7 +11,7 @@ use Exception;
 
 class WebConsoleProcessor
 {
-    private $apiUrl = 'http://localhost:8080';//'http://bdd-analyser-api.inevitabletech.uk';
+    private $apiUrl = 'http://localhost:8000';//'http://bdd-analyser-api.inevitabletech.uk';
 
     private $consoleUrl = 'https://bdd-analyser-console.inevitabletech.uk';
 
@@ -23,6 +23,8 @@ class WebConsoleProcessor
 
     public $scanPath = '';
 
+    public $creds = [];
+
     public function __construct(string $apiToken, Client $client)
     {
         if (! $apiToken) {
@@ -32,39 +34,28 @@ class WebConsoleProcessor
         $this->tokenFilePath = getcwd() . '/build';
         $this->apiToken = $apiToken;
         $this->client = $client;
+        $this->loadCreds();
     }
 
-    public function createUser(string $firstname, string $lastname, string $email): ?int
+    public function setToken(string $token)
+    {
+        $this->userToken = $token;
+    }
+
+    public function getUserId(): ?int
     {
         $response = $this->client->request(
-            'POST',
+            'GET',
             $this->getEndpoint('/user'),
             [
-                'json' => [
-                    'firstname' => $firstname,
-                    'lastname' => $lastname,
-                    'email' => $email
-                ],
                 'headers' => $this->getHeaders()
             ]
         );
 
-        try {
-            return $this->getContentIfSuccess($response, 'create-user')['user_id'];
-        } catch (Exception $e) {
-            $response = $this->client->request(
-                'GET',
-                $this->getEndpoint('/user/id/' . $email),
-                [
-                    'headers' => $this->getHeaders()
-                ]
-            );
-
-            return $this->getContentIfSuccess($response, 'get-user-id')[0]['user_id'] ?? null;
-        }
+        return $this->getContentIfSuccess($response, 'get-user-id')[0]['id'] ?? null;
     }
 
-    public function createProject(string $token, string $projectName, int $userId): ?int
+    public function createProject(string $projectName, int $userId): ?int
     {
         $response = $this->client->request(
             'POST',
@@ -74,53 +65,36 @@ class WebConsoleProcessor
                     'user_id' => $userId,
                     'name' => $projectName
                 ],
-                'headers' => $this->getHeaders(['user_token' => $token])
+                'headers' => $this->getHeaders()
             ]
         );
 
         return $this->getContentIfSuccess($response, 'create-project')['id'] ?? null;
     }
 
-    public function createToken(int $userId): ?string
-    {
-        $response = $this->client->request(
-            'POST',
-            $this->getEndpoint('/token'),
-            [
-                'json' => [
-                    'user_id' => $userId
-                ],
-                'headers' => $this->getHeaders()
-            ]
-        );
-
-        return $this->getContentIfSuccess($response, 'create-token')['token'];
-    }
-
-    public function saveTokenDetails(string $token, int $projectId): string
+    public function saveCreds(array $creds): string
     {
         if (! is_dir($this->tokenFilePath)) {
             mkdir($this->tokenFilePath, 0777, true);
         }
 
-        file_put_contents($this->tokenFilePath . '/' . $this->tokenFile, base64_encode(json_encode([
-            'userToken' => $token,
-            'projectId' => $projectId
-        ])));
+        file_put_contents($this->tokenFilePath . '/' . $this->tokenFile, base64_encode(json_encode($creds)));
 
         return $this->tokenFilePath . '/' . $this->tokenFile;
     }
 
-    public function getTokenDetails(): array
+    public function getCred(string $key)
     {
-        return json_decode(base64_decode(file_get_contents($this->tokenFilePath . '/' . $this->tokenFile)), true);
+        if (! isset($this->creds[$key])) {
+            throw new \Exception("Cred '$key' not found.");
+        }
+
+        return $this->creds[$key];
     }
 
     public function sendAnalysis(
         Entities\OutcomeCollection $outcomes,
-        array $severities,
-        string $userToken,
-        int $projectId
+        array $severities
     ): int {
         $activeRules = ArrayProcessor::cleanArray($outcomes->getSummary('activeRules'));
         $activeSteps = ArrayProcessor::cleanArray($outcomes->getSummary('activeSteps'));
@@ -129,18 +103,19 @@ class WebConsoleProcessor
 
         $payload = [
             'json' => [
-                'project_id' => $projectId,
-                'violations' => $this->cleanse($outcomes->getItems()),
-                'summary' => $this->cleanse($outcomes->summary),
-                'active_rules' => $activeRules,
-                'active_steps' => $activeSteps,
+                'project_id' => $this->getCred('project_id'),
+                'user_id' => $this->getCred('user_id'),
+                'violations' => json_encode($this->cleanse($outcomes->getItems())),
+                'summary' => json_encode($this->cleanse($outcomes->summary)),
+                'active_rules' => json_encode($activeRules),
+                'active_steps' => json_encode($activeSteps),
                 'rules_version' => $this->getRulesVersion(),
                 'severities' => json_encode($severities),
-                'branch' => '',
-                'commit_hash' => '',
+                'branch' => $this->getBranch(),
+                'commit_hash' => $this->getCommitHash(),
                 'run_at' => (new \DateTime())->format('Y-m-d H:i:s'),
             ],
-            'headers' => $this->getHeaders(['user_token' => $userToken])
+            'headers' => $this->getHeaders()
         ];
 
         $response = $this->client->request(
@@ -150,6 +125,44 @@ class WebConsoleProcessor
         );
 
         return $this->getContentIfSuccess($response, 'create-analysis')['id'] ?? null;
+    }
+
+    public function buildReportUrl(string $project, int $analysisId): string
+    {
+        return $this->consoleUrl . 'project/ ' . $project . ' /analysis/' . $analysisId;
+    }
+
+    public function printConsoleLink(OutputInterface $output, int $projectId, int $analysisId)
+    {
+        $output->writeln(sprintf(
+            'Remote report: <comment>%s/project/%d/analysis/%d</comment>',
+            $this->consoleUrl,
+            $projectId,
+            $analysisId
+        ));
+    }
+
+    private function loadCreds()
+    {
+        if (!file_exists($this->tokenFilePath . '/' . $this->tokenFile)) {
+            return [];
+        }
+
+        $this->creds = json_decode(base64_decode(
+            file_get_contents($this->tokenFilePath . '/' . $this->tokenFile)
+        ), true);
+
+        $this->userToken = $this->creds['user_token'] ?? null;
+    }
+
+    private function getBranch(): string
+    {
+        return 'fakemain';
+    }
+
+    private function getCommitHash(): string
+    {
+        return 'fakehash';
     }
 
     private function cleanse(array $data): array
@@ -170,27 +183,13 @@ class WebConsoleProcessor
         return \Composer\InstalledVersions::getVersion('forceedge01/bdd-analyser-rules');
     }
 
-    public function buildReportUrl(string $project, int $analysisId): string
-    {
-        return $this->consoleUrl . 'project/ ' . $project . ' /analysis/' . $analysisId;
-    }
-
-    public function printConsoleLink(OutputInterface $output, int $projectId, int $analysisId)
-    {
-        $output->writeln(sprintf(
-            'Remote report: <comment>%s/project/%d/analysis/%d</comment>',
-            $this->consoleUrl,
-            $projectId,
-            $analysisId
-        ));
-    }
-
     private function getHeaders(array $additionalHeaders = []): array
     {
         return array_merge([
             'Accept-Version' => $this->apiVersion,
             'Content-Type' => 'application/json',
-            'api_token' => $this->apiToken
+            'api_token' => $this->apiToken,
+            'user_token' => $this->userToken,
         ], $additionalHeaders);
     }
 
