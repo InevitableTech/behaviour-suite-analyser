@@ -11,6 +11,7 @@ $application = new Symfony\Component\Console\Application('behaviour-automation-s
 // Register all Commands
 $application->add(new Forceedge01\BDDStaticAnalyser\Command\Scan());
 $application->add(new Forceedge01\BDDStaticAnalyser\Command\Initialise());
+$application->add(new Forceedge01\BDDStaticAnalyser\Command\RegisterCreds());
 
 // Run it
 $application->run();
