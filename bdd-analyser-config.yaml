@@ -12,7 +12,7 @@ config:
     html_report_path: <relative_path>/build/report.html
 
     # Json report generator.
-    enable_json_report: false
+    enable_json_report: true
     json_report_processor: Forceedge01\BDDStaticAnalyser\Processor\JsonProcessor
     json_report_path: <relative_path>/build/report.json
 
