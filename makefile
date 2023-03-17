@@ -34,7 +34,7 @@ tests-deps:
 	docker-compose run php7.1-test sh -c "php -v && cd ./vendor/forceedge01/bdd-analyser-rules && ./vendor/bin/phpunit tests"
 
 run:
-	docker-compose run php7.1-test sh -c "cd testproject && vendor/bin/bdd-analyser scan testproject/features --config=bdd-analyser-config-dev.yaml"
+	docker-compose run php7.1-test sh -c "cd testproject && vendor/bin/bdd-analyser scan features"
 
 run-local:
 	./bin/bdd-analyser scan testproject/features --config=bdd-analyser-config-dev.yaml

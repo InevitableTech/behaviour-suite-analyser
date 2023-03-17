@@ -13,7 +13,7 @@ class WebConsoleProcessor
 {
     private $apiUrl = 'http://localhost:8000';//'http://bdd-analyser-api.inevitabletech.uk';
 
-    private $consoleUrl = 'https://bdd-analyser-console.inevitabletech.uk';
+    private $consoleUrl = 'http://localhost:8080';//'https://bdd-analyser-console.inevitabletech.uk';
 
     private $apiVersion = 'v1';
 
@@ -168,8 +168,7 @@ class WebConsoleProcessor
     private function cleanse(array $data): array
     {
         // Strip out path until project directory name.
-        $cwd = getcwd();
-        $projectPath = dirname($cwd);
+        $projectPath = getcwd();
 
         return json_decode(str_replace(
             [$projectPath, str_replace('/', '\\/', $projectPath)],

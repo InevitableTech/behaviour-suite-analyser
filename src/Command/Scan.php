@@ -88,6 +88,8 @@ class Scan extends Command
                 }
             }
 
+            Processor\SummaryProcessor::setSummary($outcomeCollection);
+
             $output->writeln(print_r($outcomeCollection, true), OutputInterface::VERBOSITY_DEBUG);
 
             $displayProcessor->displayOutcomes($outcomeCollection, $severities);

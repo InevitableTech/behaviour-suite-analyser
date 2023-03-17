@@ -90,13 +90,20 @@ class RulesProcessor
         $rule->setFeatureFileContents($contentObject);
         $rule->applyOnFeature($contentObject, $collection);
 
+        foreach ($contentObject->feature->getTags() as $tag) {
+            $collection->addSummary('tags', $tag);
+        }
+
         if ($contentObject->background) {
             $collection->addSummary('backgrounds', $contentObject->filePath . $contentObject->background->lineNumber);
             $rule->applyOnBackground($contentObject->background, $collection);
         }
 
         foreach ($contentObject->scenarios as $scenario) {
-            // Scenarios
+            foreach ($scenario->getTags() as $tag) {
+                $collection->addSummary('tags', $tag);
+            }
+
             $collection->addSummary('scenarios', $contentObject->filePath . $scenario->lineNumber);
             $rule->setScenario($scenario);
             $rule->beforeApplyOnScenario($scenario, $collection);

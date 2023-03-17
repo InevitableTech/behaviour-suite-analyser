@@ -32,6 +32,8 @@ class RegisterCreds extends BaseCommand
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        // Set api_key before calling this or throw exception.
+
         // Get necessary user details.
         $output->writeln('<info>Generating a user token will allow you send reports to the web console to track your automation suite results history and track its health.</info>');
 
