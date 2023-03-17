@@ -161,8 +161,8 @@ class WebConsoleProcessor
         $error = null;
         exec('git branch --show-current 2> /dev/null', $output, $error);
 
-        if ($error === 0) {
-            return $output;
+        if ($error === 0 && count($output) == 1) {
+            return $output[0];
         }
 
         return '';
@@ -174,8 +174,8 @@ class WebConsoleProcessor
         $error = null;
         exec('git rev-parse --verify HEAD 2> /dev/null', $output, $error);
 
-        if ($error === 0) {
-            return $output;
+        if ($error === 0 && count($output) == 1) {
+            return $output[0];
         }
 
         return '';
