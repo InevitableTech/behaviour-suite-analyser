@@ -157,12 +157,28 @@ class WebConsoleProcessor
 
     private function getBranch(): string
     {
-        return 'fakemain';
+        $output = null;
+        $error = null;
+        exec('git branch --show-current 2> /dev/null', $output, $error);
+
+        if ($error === 0) {
+            return $output;
+        }
+
+        return '';
     }
 
     private function getCommitHash(): string
     {
-        return 'fakehash';
+        $output = null;
+        $error = null;
+        exec('git rev-parse --verify HEAD 2> /dev/null', $output, $error);
+
+        if ($error === 0) {
+            return $output;
+        }
+
+        return '';
     }
 
     private function cleanse(array $data): array
