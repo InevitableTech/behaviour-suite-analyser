@@ -100,7 +100,7 @@ class Scan extends Command
             // Send the report off.
             if ($config->get('web_console_report')) {
                 $webConsole = new Processor\WebConsoleProcessor(
-                    $config->get('api_key'),
+                    $config->get('api_key', ''),
                     new Client()
                 );
                 $analysisId = $webConsole->sendAnalysis(

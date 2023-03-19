@@ -39,7 +39,7 @@ class RegisterCreds extends BaseCommand
         $output->writeln('<info>Generating a user token will allow you send reports to the web console to track your automation suite results history and track its health.</info>');
 
         $config = $this->getConfig($input->getOption('config'));
-        $console = new Processor\WebConsoleProcessor($config->get('api_key'), new Client());
+        $console = new Processor\WebConsoleProcessor($config->get('api_key', ''), new Client());
 
         $projectToken = $input->getOption('project-token');
         $path = null;
