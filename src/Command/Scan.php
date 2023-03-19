@@ -81,6 +81,7 @@ class Scan extends Command
                 $output->writeln(print_r($fileContents, true), OutputInterface::VERBOSITY_DEBUG);
 
                 try {
+                    $outcomeCollection->summary['linesCount'][$file] = count($fileContents->raw);
                     $rulesProcessor->applyRules($fileContents, $outcomeCollection);
                 } catch (Exception $e) {
                     self::error($output, sprintf(''), $e);

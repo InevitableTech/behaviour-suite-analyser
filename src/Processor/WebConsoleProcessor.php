@@ -55,7 +55,7 @@ class WebConsoleProcessor
         return $this->getContentIfSuccess($response, 'get-user-id')[0]['id'] ?? null;
     }
 
-    public function createProject(string $projectName, int $userId): ?int
+    public function createProject(string $projectName, string $repoUrl, string $mainBranch, int $userId): ?int
     {
         $response = $this->client->request(
             'POST',
@@ -63,7 +63,9 @@ class WebConsoleProcessor
             [
                 'json' => [
                     'user_id' => $userId,
-                    'name' => $projectName
+                    'name' => $projectName,
+                    'repo_url' => $repoUrl,
+                    'main_branch' => $mainBranch
                 ],
                 'headers' => $this->getHeaders()
             ]
@@ -111,8 +113,8 @@ class WebConsoleProcessor
                 'active_steps' => json_encode($activeSteps),
                 'rules_version' => $this->getRulesVersion(),
                 'severities' => json_encode($severities),
-                'branch' => $this->getBranch(),
-                'commit_hash' => $this->getCommitHash(),
+                'branch' => VersionControlProcessor::getBranch(),
+                'commit_hash' => VersionControlProcessor::getCommitHash(),
                 'run_at' => (new \DateTime())->format('Y-m-d H:i:s'),
             ],
             'headers' => $this->getHeaders()
@@ -153,32 +155,6 @@ class WebConsoleProcessor
         ), true);
 
         $this->userToken = $this->creds['user_token'] ?? null;
-    }
-
-    private function getBranch(): string
-    {
-        $output = null;
-        $error = null;
-        exec('git branch --show-current 2> /dev/null', $output, $error);
-
-        if ($error === 0 && count($output) == 1) {
-            return $output[0];
-        }
-
-        return '';
-    }
-
-    private function getCommitHash(): string
-    {
-        $output = null;
-        $error = null;
-        exec('git rev-parse --verify HEAD 2> /dev/null', $output, $error);
-
-        if ($error === 0 && count($output) == 1) {
-            return $output[0];
-        }
-
-        return '';
     }
 
     private function cleanse(array $data): array

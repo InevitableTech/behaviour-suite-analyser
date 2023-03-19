@@ -44,7 +44,13 @@ class RegisterCreds extends BaseCommand
         }
 
         $defaultProjectName = basename(getcwd());
-        $projectName = $this->ask('Project name [default]: ', $input, $output, $defaultProjectName);
+        $projectName = $this->ask('Project name [%s]: ', $input, $output, $defaultProjectName);
+
+        $defaultRepoUrl = Processor\VersionControlProcessor::getRepoUrl();
+        $repoUrl = $this->ask('Repository url [%s]: ', $input, $output, $defaultRepoUrl);
+
+        $defaultBranch = 'main';
+        $branch = $this->ask('Default branch [%s]: ', $input, $output, $defaultBranch);
 
         $output->writeln('');
         $output->writeln('<info>Creating project...</info>');
@@ -55,7 +61,7 @@ class RegisterCreds extends BaseCommand
         $console->setToken($token);
 
         $userId = $console->getUserId();
-        $projectId = $console->createProject($projectName, $userId);
+        $projectId = $console->createProject($projectName, $repoUrl, $branch, $userId);
 
         $path = $console->saveCreds([
             'user_token' => $token,

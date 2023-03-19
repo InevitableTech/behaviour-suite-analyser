@@ -95,7 +95,7 @@ class RulesProcessor
         }
 
         if ($contentObject->background) {
-            $collection->addSummary('backgrounds', $contentObject->filePath . $contentObject->background->lineNumber);
+            $collection->addSummary('backgrounds', $contentObject->filePath . ':' . $contentObject->background->lineNumber);
             $rule->applyOnBackground($contentObject->background, $collection);
         }
 
@@ -104,7 +104,7 @@ class RulesProcessor
                 $collection->addSummary('tags', $tag);
             }
 
-            $collection->addSummary('scenarios', $contentObject->filePath . $scenario->lineNumber);
+            $collection->addSummary('scenarios', $contentObject->filePath . ':' . $scenario->lineNumber);
             $rule->setScenario($scenario);
             $rule->beforeApplyOnScenario($scenario, $collection);
             $rule->applyOnScenario($scenario, $collection);
