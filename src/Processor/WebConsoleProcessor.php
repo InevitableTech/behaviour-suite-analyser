@@ -21,13 +21,11 @@ class WebConsoleProcessor
 
     private $tokenFile = 'token.txt';
 
-    private $projectToken = '';
-
     public $scanPath = '';
 
     public $creds = [];
 
-    public function __construct(string $apiToken, Client $client, string $projectToken = null)
+    public function __construct(string $apiToken, Client $client)
     {
         if (! $apiToken) {
             throw new Exception('Unable to retrieve api_key. Have you set it in the config?');
@@ -36,7 +34,7 @@ class WebConsoleProcessor
         $this->tokenFilePath = getcwd() . '/build';
         $this->apiToken = $apiToken;
         $this->client = $client;
-        $this->loadCreds($projectToken);
+        $this->loadCreds();
     }
 
     public function setToken(string $token)
@@ -95,7 +93,12 @@ class WebConsoleProcessor
             mkdir($this->tokenFilePath, 0777, true);
         }
 
-        file_put_contents($this->tokenFilePath . '/' . $this->tokenFile, base64_encode(json_encode($creds)));
+        return $this->saveToken(base64_encode(json_encode($creds)));
+    }
+
+    public function saveToken(string $token): string
+    {
+        file_put_contents($this->tokenFilePath . '/' . $this->tokenFile, $token);
 
         return $this->tokenFilePath . '/' . $this->tokenFile;
     }
@@ -161,15 +164,11 @@ class WebConsoleProcessor
 
     private function loadCreds(string $projectToken = null)
     {
-        if ($projectToken) {
-            $this->projectToken = $projectToken;
-        } else {
-            if (!file_exists($this->tokenFilePath . '/' . $this->tokenFile)) {
-                return [];
-            }
-
-            $this->projectToken = file_get_contents($this->tokenFilePath . '/' . $this->tokenFile);
+        if (!file_exists($this->tokenFilePath . '/' . $this->tokenFile)) {
+            return [];
         }
+
+        $this->projectToken = file_get_contents($this->tokenFilePath . '/' . $this->tokenFile);
 
         $this->creds = json_decode(base64_decode($this->projectToken), true);
         $this->userToken = $this->creds['user_token'] ?? null;
