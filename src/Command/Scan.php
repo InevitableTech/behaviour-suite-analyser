@@ -26,6 +26,7 @@ class Scan extends Command
         $this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Path to config file', DEFAULT_CONFIG_PATH . Entities\Config::DEFAULT_NAME);
         $this->addOption('severities', 's', InputOption::VALUE_REQUIRED, 'Severities to display', '0,1,2,3,4');
         $this->addOption('rules', 'r', InputOption::VALUE_NONE, 'Display rules applied');
+        $this->addOption('project-token', 'p', InputOption::VALUE_REQUIRED, 'Run an analysis against the web console using a project token (skips registering token (CI)');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
@@ -99,7 +100,11 @@ class Scan extends Command
 
             // Send the report off.
             if ($config->get('web_console_report')) {
-                $webConsole = new Processor\WebConsoleProcessor($config->get('api_key'), new Client());
+                $webConsole = new Processor\WebConsoleProcessor(
+                    $config->get('api_key'),
+                    new Client(),
+                    $input->getOption('project-token')
+                );
                 $analysisId = $webConsole->sendAnalysis(
                     clone $outcomeCollection,
                     $severities

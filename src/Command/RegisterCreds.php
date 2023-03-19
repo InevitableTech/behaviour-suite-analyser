@@ -43,25 +43,46 @@ class RegisterCreds extends BaseCommand
             throw new Exception('You must provide a token, generate a token from the remote bdd analyser web console.');
         }
 
-        $defaultProjectName = basename(getcwd());
-        $projectName = $this->ask('Project name [%s]: ', $input, $output, $defaultProjectName);
-
-        $defaultRepoUrl = Processor\VersionControlProcessor::getRepoUrl();
-        $repoUrl = $this->ask('Repository url [%s]: ', $input, $output, $defaultRepoUrl);
-
-        $defaultBranch = 'main';
-        $branch = $this->ask('Default branch [%s]: ', $input, $output, $defaultBranch);
-
-        $output->writeln('');
-        $output->writeln('<info>Creating project...</info>');
-        $output->writeln('');
-
         $config = $this->getConfig($input->getOption('config'));
         $console = new Processor\WebConsoleProcessor($config->get('api_key'), new Client());
         $console->setToken($token);
 
+        // Get existing projects associated with user.
+        $projects = $console->getUserProjects();
+
+        $ids = array_column($projects, 'id');
+        $projectNames = array_column($projects, 'name');
+        print_r($projectNames);
+
+        $createNewOption = 'Create new';
+        $projectIndex = $this->ask(
+            'Select which project number you would like to use [%s]',
+            $input,
+            $output,
+            $createNewOption
+        );
+
         $userId = $console->getUserId();
-        $projectId = $console->createProject($projectName, $repoUrl, $branch, $userId);
+
+        $projectId = null;
+        if ($projectIndex == $createNewOption) {
+            $defaultProjectName = basename(getcwd());
+            $projectName = $this->ask('Project name [%s]: ', $input, $output, $defaultProjectName);
+
+            $defaultRepoUrl = Processor\VersionControlProcessor::getRepoUrl();
+            $repoUrl = $this->ask('Repository url [%s]: ', $input, $output, $defaultRepoUrl);
+
+            $defaultBranch = 'main';
+            $branch = $this->ask('Default branch [%s]: ', $input, $output, $defaultBranch);
+
+            $output->writeln('');
+            $output->writeln('<info>Creating project...</info>');
+            $output->writeln('');
+
+            $projectId = $console->createProject($projectName, $repoUrl, $branch, $userId);
+        } else {
+            $projectId = $ids[$projectIndex];
+        }
 
         $path = $console->saveCreds([
             'user_token' => $token,

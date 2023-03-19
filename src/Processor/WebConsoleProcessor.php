@@ -21,11 +21,13 @@ class WebConsoleProcessor
 
     private $tokenFile = 'token.txt';
 
+    private $projectToken = '';
+
     public $scanPath = '';
 
     public $creds = [];
 
-    public function __construct(string $apiToken, Client $client)
+    public function __construct(string $apiToken, Client $client, string $projectToken = null)
     {
         if (! $apiToken) {
             throw new Exception('Unable to retrieve api_key. Have you set it in the config?');
@@ -34,7 +36,7 @@ class WebConsoleProcessor
         $this->tokenFilePath = getcwd() . '/build';
         $this->apiToken = $apiToken;
         $this->client = $client;
-        $this->loadCreds();
+        $this->loadCreds($projectToken);
     }
 
     public function setToken(string $token)
@@ -53,6 +55,19 @@ class WebConsoleProcessor
         );
 
         return $this->getContentIfSuccess($response, 'get-user-id')[0]['id'] ?? null;
+    }
+
+    public function getUserProjects(): ?array
+    {
+        $response = $this->client->request(
+            'GET',
+            $this->getEndpoint('/project'),
+            [
+                'headers' => $this->getHeaders()
+            ]
+        );
+
+        return $this->getContentIfSuccess($response, 'get-user-projects') ?? null;
     }
 
     public function createProject(string $projectName, string $repoUrl, string $mainBranch, int $userId): ?int
@@ -144,16 +159,19 @@ class WebConsoleProcessor
         ));
     }
 
-    private function loadCreds()
+    private function loadCreds(string $projectToken = null)
     {
-        if (!file_exists($this->tokenFilePath . '/' . $this->tokenFile)) {
-            return [];
+        if ($projectToken) {
+            $this->projectToken = $projectToken;
+        } else {
+            if (!file_exists($this->tokenFilePath . '/' . $this->tokenFile)) {
+                return [];
+            }
+
+            $this->projectToken = file_get_contents($this->tokenFilePath . '/' . $this->tokenFile);
         }
 
-        $this->creds = json_decode(base64_decode(
-            file_get_contents($this->tokenFilePath . '/' . $this->tokenFile)
-        ), true);
-
+        $this->creds = json_decode(base64_decode($this->projectToken), true);
         $this->userToken = $this->creds['user_token'] ?? null;
     }
 
