@@ -28,7 +28,8 @@ class RegisterCreds extends BaseCommand
         $this->setName('token:register');
         $this->setDescription('Generate and store a user token to authenticate against the web console platform.');
         $this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Path to config file', DEFAULT_CONFIG_PATH . Entities\Config::DEFAULT_NAME);
-        $this->addOption('project-token', 'p', InputOption::VALUE_REQUIRED, 'Run an analysis against the web console using a project token (skips registering token (CI)');
+        $this->addOption('token', 't', InputOption::VALUE_REQUIRED, 'Register a token from the web console');
+        $this->addOption('project-id', 'p', InputOption::VALUE_REQUIRED, 'Register token for this project id');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
@@ -41,23 +42,32 @@ class RegisterCreds extends BaseCommand
         $config = $this->getConfig($input->getOption('config'));
         $console = new Processor\WebConsoleProcessor($config->get('api_key', ''), new Client());
 
-        $projectToken = $input->getOption('project-token');
+        $userToken = $input->getOption('token');
+        $projectId = (int) $input->getOption('project-id');
         $path = null;
 
-        if ($projectToken) {
-            $path = $console->saveToken($projectToken);
-        } else {
-            $token = $this->ask('Enter user token: ', $input, $output, null, true);
+        if (! $userToken) {
+            $userToken = $this->ask('Enter user token: ', $input, $output, null, true);
 
-            if (! $token) {
+            if (! $userToken) {
                 throw new Exception('You must provide a token, generate a token from the remote bdd analyser web console.');
             }
+        }
 
-            $console->setToken($token);
+        $console->setToken($userToken);
+        $userId = $console->getUserId();
 
-            // Get existing projects associated with user.
+        // Get existing projects associated with user.
+        if ($projectId) {
+            $project = $console->getUserProject($projectId);
+
+            if (! $project) {
+                throw new \Exception('Project for provided id not found.');
+            }
+
+            $output->writeln('Registering against existing project: ' . $project['name']);
+        } else {
             $projects = $console->getUserProjects();
-
             $ids = array_column($projects, 'id');
             $projectNames = array_column($projects, 'name');
             print_r($projectNames);
@@ -70,9 +80,6 @@ class RegisterCreds extends BaseCommand
                 $createNewOption
             );
 
-            $userId = $console->getUserId();
-
-            $projectId = null;
             if ($projectIndex == $createNewOption) {
                 $defaultProjectName = basename(getcwd());
                 $projectName = $this->ask('Project name [%s]: ', $input, $output, $defaultProjectName);
@@ -91,13 +98,13 @@ class RegisterCreds extends BaseCommand
             } else {
                 $projectId = $ids[$projectIndex];
             }
-
-            $path = $console->saveCreds([
-                'user_token' => $token,
-                'project_id' => $projectId,
-                'user_id' => $userId
-            ]);
         }
+
+        $path = $console->saveCreds([
+            'user_token' => $userToken,
+            'project_id' => $projectId,
+            'user_id' => $userId
+        ]);
 
         $output->writeln('<comment>Token saved: ' . $path . '</comment>');
     }

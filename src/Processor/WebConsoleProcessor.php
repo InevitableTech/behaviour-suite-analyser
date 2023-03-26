@@ -68,6 +68,19 @@ class WebConsoleProcessor
         return $this->getContentIfSuccess($response, 'get-user-projects') ?? null;
     }
 
+    public function getUserProject(int $projectId): ?array
+    {
+        $response = $this->client->request(
+            'GET',
+            $this->getEndpoint('/project/' . $projectId),
+            [
+                'headers' => $this->getHeaders()
+            ]
+        );
+
+        return $this->getContentIfSuccess($response, 'get-user-project') ?? null;
+    }
+
     public function createProject(string $projectName, string $repoUrl, string $mainBranch, int $userId): ?int
     {
         $response = $this->client->request(
