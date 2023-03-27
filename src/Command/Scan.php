@@ -108,6 +108,10 @@ class Scan extends Command
                     $severities
                 );
 
+                if (! $analysisId) {
+                    throw new Exception("Unable to create analysis.");
+                }
+
                 $webConsole->printConsoleLink($output, $webConsole->getCred('project_id'), $analysisId);
             }
 

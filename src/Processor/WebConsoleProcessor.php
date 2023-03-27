@@ -11,9 +11,11 @@ use Exception;
 
 class WebConsoleProcessor
 {
-    private $apiUrl = 'http://localhost:8000';//'http://bdd-analyser-api.inevitabletech.uk';
+    private $apiUrl = 'http://localhost:8000';
+    private $consoleUrl = 'http://localhost:8080';
 
-    private $consoleUrl = 'http://localhost:8080';//'https://bdd-analyser-console.inevitabletech.uk';
+    // private $apiUrl = 'https://bdd-analyser-api.inevitabletech.uk';
+    // private $consoleUrl = 'https://bdd-analyser-console.inevitabletech.uk';
 
     private $apiVersion = 'v1';
 
@@ -128,7 +130,7 @@ class WebConsoleProcessor
     public function sendAnalysis(
         Entities\OutcomeCollection $outcomes,
         array $severities
-    ): int {
+    ): ?int {
         $activeRules = ArrayProcessor::cleanArray($outcomes->getSummary('activeRules'));
         $activeSteps = ArrayProcessor::cleanArray($outcomes->getSummary('activeSteps'));
         unset($outcomes->summary['activeRules']);
@@ -229,7 +231,7 @@ class WebConsoleProcessor
         $data = json_decode($response->getBody()->getContents(), true);
 
         if ($data['success'] !== true) {
-            throw new Exception("API call [$callId] failed, error: " . $data['message']);
+            throw new Exception("API call [$callId] failed, error: " . $data['message'] ?? null);
         }
 
         return $data['data'];
