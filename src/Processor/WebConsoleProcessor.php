@@ -11,7 +11,7 @@ use Exception;
 
 class WebConsoleProcessor
 {
-    private $apiUrl = 'http://localhost:8000';//'http://bdd-analyser-api.inevitabletech.uk';
+    private $apiUrl = 'http://api:8000';//'http://bdd-analyser-api.inevitabletech.uk';
 
     private $consoleUrl = 'https://bdd-analyser-console.inevitabletech.uk';
 
@@ -97,7 +97,9 @@ class WebConsoleProcessor
         array $severities
     ): int {
         $activeRules = ArrayProcessor::cleanArray($outcomes->getSummary('activeRules'));
-        $activeSteps = ArrayProcessor::cleanArray($outcomes->getSummary('activeSteps'));
+        $activeSteps = $outcomes->getSummary('activeSteps');
+        $tags = $outcomes->summary['tags'];
+        unset($outcomes->summary['tags']);
         unset($outcomes->summary['activeRules']);
         unset($outcomes->summary['activeSteps']);
 
@@ -107,12 +109,13 @@ class WebConsoleProcessor
                 'user_id' => $this->getCred('user_id'),
                 'violations' => json_encode($this->cleanse($outcomes->getItems())),
                 'summary' => json_encode($this->cleanse($outcomes->summary)),
+                'tags' => json_encode($tags),
                 'active_rules' => json_encode($activeRules),
                 'active_steps' => json_encode($activeSteps),
                 'rules_version' => $this->getRulesVersion(),
                 'severities' => json_encode($severities),
-                'branch' => $this->getBranch(),
-                'commit_hash' => $this->getCommitHash(),
+                'branch' => VersionControlProcessor::getBranch(),
+                'commit_hash' => VersionControlProcessor::getCommitHash(),
                 'run_at' => (new \DateTime())->format('Y-m-d H:i:s'),
             ],
             'headers' => $this->getHeaders()
@@ -168,8 +171,7 @@ class WebConsoleProcessor
     private function cleanse(array $data): array
     {
         // Strip out path until project directory name.
-        $cwd = getcwd();
-        $projectPath = dirname($cwd);
+        $projectPath = getcwd();
 
         return json_decode(str_replace(
             [$projectPath, str_replace('/', '\\/', $projectPath)],

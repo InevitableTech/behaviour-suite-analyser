@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d12954445afca85b4e7c40a62027c1d5",
+    "content-hash": "aaba24e36712ed5ca7dfcb85519876e5",
     "packages": [
         {
             "name": "forceedge01/bdd-analyser-rules",
-            "version": "2.2.0",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/InevitableTech/behaviour-suite-analyser-rules.git",
-                "reference": "8a84f171d85a562d422935fba8b9ee070f9d31a0"
+                "reference": "ca5c1a1e815b3e712bdee40b8b66178e727cfbec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/InevitableTech/behaviour-suite-analyser-rules/zipball/8a84f171d85a562d422935fba8b9ee070f9d31a0",
-                "reference": "8a84f171d85a562d422935fba8b9ee070f9d31a0",
+                "url": "https://api.github.com/repos/InevitableTech/behaviour-suite-analyser-rules/zipball/ca5c1a1e815b3e712bdee40b8b66178e727cfbec",
+                "reference": "ca5c1a1e815b3e712bdee40b8b66178e727cfbec",
                 "shasum": ""
             },
             "require": {
@@ -58,9 +58,9 @@
             ],
             "support": {
                 "issues": "https://github.com/InevitableTech/behaviour-suite-analyser-rules/issues",
-                "source": "https://github.com/InevitableTech/behaviour-suite-analyser-rules/tree/2.2.0"
+                "source": "https://github.com/InevitableTech/behaviour-suite-analyser-rules/tree/2.3.0"
             },
-            "time": "2023-03-16T20:51:52+00:00"
+            "time": "2023-04-09T18:43:39+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -555,25 +555,25 @@
         },
         {
             "name": "psr/http-message",
-            "version": "1.0.1",
+            "version": "1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-message.git",
-                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363"
+                "reference": "cb6ce4845ce34a8ad9e68117c10ee90a29919eba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/http-message/zipball/f6561bf28d520154e4b0ec72be95418abe6d9363",
-                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363",
+                "url": "https://api.github.com/repos/php-fig/http-message/zipball/cb6ce4845ce34a8ad9e68117c10ee90a29919eba",
+                "reference": "cb6ce4845ce34a8ad9e68117c10ee90a29919eba",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": "^7.2 || ^8.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "1.1.x-dev"
                 }
             },
             "autoload": {
@@ -602,9 +602,9 @@
                 "response"
             ],
             "support": {
-                "source": "https://github.com/php-fig/http-message/tree/master"
+                "source": "https://github.com/php-fig/http-message/tree/1.1"
             },
-            "time": "2016-08-06T14:39:51+00:00"
+            "time": "2023-04-04T09:50:52+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
@@ -652,16 +652,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v5.4.21",
+            "version": "v5.4.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "c77433ddc6cdc689caf48065d9ea22ca0853fbd9"
+                "reference": "3cd51fd2e6c461ca678f84d419461281bd87a0a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/c77433ddc6cdc689caf48065d9ea22ca0853fbd9",
-                "reference": "c77433ddc6cdc689caf48065d9ea22ca0853fbd9",
+                "url": "https://api.github.com/repos/symfony/console/zipball/3cd51fd2e6c461ca678f84d419461281bd87a0a8",
+                "reference": "3cd51fd2e6c461ca678f84d419461281bd87a0a8",
                 "shasum": ""
             },
             "require": {
@@ -726,12 +726,12 @@
             "homepage": "https://symfony.com",
             "keywords": [
                 "cli",
-                "command line",
+                "command-line",
                 "console",
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v5.4.21"
+                "source": "https://github.com/symfony/console/tree/v5.4.22"
             },
             "funding": [
                 {
@@ -747,7 +747,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-02-25T16:59:41+00:00"
+            "time": "2023-03-25T09:27:28+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -2167,16 +2167,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.6.5",
+            "version": "9.6.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "86e761949019ae83f49240b2f2123fb5ab3b2fc5"
+                "reference": "b65d59a059d3004a040c16a82e07bbdf6cfdd115"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/86e761949019ae83f49240b2f2123fb5ab3b2fc5",
-                "reference": "86e761949019ae83f49240b2f2123fb5ab3b2fc5",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/b65d59a059d3004a040c16a82e07bbdf6cfdd115",
+                "reference": "b65d59a059d3004a040c16a82e07bbdf6cfdd115",
                 "shasum": ""
             },
             "require": {
@@ -2249,7 +2249,8 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.5"
+                "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.6"
             },
             "funding": [
                 {
@@ -2265,7 +2266,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-03-09T06:34:10+00:00"
+            "time": "2023-03-27T11:43:46+00:00"
         },
         {
             "name": "sebastian/cli-parser",
