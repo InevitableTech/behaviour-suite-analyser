@@ -18,6 +18,7 @@ final class RuleProcessorTest extends TestCase
     public function testApplyRulesStringClass()
     {
         $contentObject = $this->createMock(Entities\FeatureFileContents::class);
+        $contentObject->feature = $this->createMock(Entities\Feature::class);
         $contentObject->background = '';
         $contentObject->filePath = '/a/file/path';
         $contentObject->scenarios = [];
@@ -32,11 +33,12 @@ final class RuleProcessorTest extends TestCase
     {
         $scenario = $this->createMock(Entities\Scenario::class);
         $scenario->lineNumber = 49;
-        $scenario->expects($this->once())
+        $scenario->expects($this->exactly(2))
             ->method('getSteps')
             ->willReturn([]);
 
         $contentObject = $this->createMock(Entities\FeatureFileContents::class);
+        $contentObject->feature = $this->createMock(Entities\Feature::class);
         $contentObject->background = '';
         $contentObject->filePath = '/a/file/path';
         $contentObject->scenarios = [
@@ -55,18 +57,18 @@ final class RuleProcessorTest extends TestCase
     public function testApplyRulesStringClassWithScenariosWithSteps()
     {
         $step1 = $this->createMock(Entities\Step::class);
-        $step1->expects($this->once())
+        $step1->expects($this->exactly(1))
             ->method('getStepDefinition');
         $step2 = $this->createMock(Entities\Step::class);
-        $step2->expects($this->once())
+        $step2->expects($this->exactly(1))
             ->method('getStepDefinition');
         $step3 = $this->createMock(Entities\Step::class);
-        $step3->expects($this->once())
+        $step3->expects($this->exactly(1))
             ->method('getStepDefinition');
 
         $scenario = $this->createMock(Entities\Scenario::class);
         $scenario->lineNumber = 49;
-        $scenario->expects($this->once())
+        $scenario->expects($this->exactly(2))
             ->method('getSteps')
             ->willReturn([
                 $step1,
@@ -75,6 +77,7 @@ final class RuleProcessorTest extends TestCase
             ]);
 
         $contentObject = $this->createMock(Entities\FeatureFileContents::class);
+        $contentObject->feature = $this->createMock(Entities\Feature::class);
         $contentObject->background = '';
         $contentObject->filePath = '/a/file/path';
         $contentObject->scenarios = [
@@ -93,18 +96,18 @@ final class RuleProcessorTest extends TestCase
     public function testApplyRulesStringClassWithScenariosWithStepsAndBackground()
     {
         $step1 = $this->createMock(Entities\Step::class);
-        $step1->expects($this->once())
+        $step1->expects($this->exactly(1))
             ->method('getStepDefinition');
         $step2 = $this->createMock(Entities\Step::class);
-        $step2->expects($this->once())
+        $step2->expects($this->exactly(1))
             ->method('getStepDefinition');
         $step3 = $this->createMock(Entities\Step::class);
-        $step3->expects($this->once())
+        $step3->expects($this->exactly(1))
             ->method('getStepDefinition');
 
         $scenario = $this->createMock(Entities\Scenario::class);
         $scenario->lineNumber = 123;
-        $scenario->expects($this->once())
+        $scenario->expects($this->exactly(2))
             ->method('getSteps')
             ->willReturn([
                 $step1,
@@ -113,6 +116,7 @@ final class RuleProcessorTest extends TestCase
             ]);
 
         $contentObject = $this->createMock(Entities\FeatureFileContents::class);
+        $contentObject->feature = $this->createMock(Entities\Feature::class);
         $contentObject->filePath = '/a/file/path';
         $contentObject->background = $this->createMock(Entities\Background::class);
         $contentObject->background->lineNumber = 14;
