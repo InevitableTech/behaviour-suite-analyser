@@ -11,9 +11,11 @@ use Exception;
 
 class WebConsoleProcessor
 {
-    private $apiUrl = 'http://localhost:8000';//'http://bdd-analyser-api.inevitabletech.uk';
+    private $apiUrl = 'http://localhost:8000';
+    private $consoleUrl = 'http://localhost:8080';
 
-    private $consoleUrl = 'https://bdd-analyser-console.inevitabletech.uk';
+    // private $apiUrl = 'https://bdd-analyser-api.inevitabletech.uk';
+    // private $consoleUrl = 'https://bdd-analyser-console.inevitabletech.uk';
 
     private $apiVersion = 'v1';
 
@@ -55,7 +57,33 @@ class WebConsoleProcessor
         return $this->getContentIfSuccess($response, 'get-user-id')[0]['id'] ?? null;
     }
 
-    public function createProject(string $projectName, int $userId): ?int
+    public function getUserProjects(): ?array
+    {
+        $response = $this->client->request(
+            'GET',
+            $this->getEndpoint('/project'),
+            [
+                'headers' => $this->getHeaders()
+            ]
+        );
+
+        return $this->getContentIfSuccess($response, 'get-user-projects') ?? null;
+    }
+
+    public function getUserProject(int $projectId): ?array
+    {
+        $response = $this->client->request(
+            'GET',
+            $this->getEndpoint('/project/' . $projectId),
+            [
+                'headers' => $this->getHeaders()
+            ]
+        );
+
+        return $this->getContentIfSuccess($response, 'get-user-project') ?? null;
+    }
+
+    public function createProject(string $projectName, string $repoUrl, string $mainBranch, int $userId): ?int
     {
         $response = $this->client->request(
             'POST',
@@ -63,7 +91,9 @@ class WebConsoleProcessor
             [
                 'json' => [
                     'user_id' => $userId,
-                    'name' => $projectName
+                    'name' => $projectName,
+                    'repo_url' => $repoUrl,
+                    'main_branch' => $mainBranch
                 ],
                 'headers' => $this->getHeaders()
             ]
@@ -78,7 +108,12 @@ class WebConsoleProcessor
             mkdir($this->tokenFilePath, 0777, true);
         }
 
-        file_put_contents($this->tokenFilePath . '/' . $this->tokenFile, base64_encode(json_encode($creds)));
+        return $this->saveToken(base64_encode(json_encode($creds)));
+    }
+
+    public function saveToken(string $token): string
+    {
+        file_put_contents($this->tokenFilePath . '/' . $this->tokenFile, $token);
 
         return $this->tokenFilePath . '/' . $this->tokenFile;
     }
@@ -95,9 +130,11 @@ class WebConsoleProcessor
     public function sendAnalysis(
         Entities\OutcomeCollection $outcomes,
         array $severities
-    ): int {
+    ): ?int {
         $activeRules = ArrayProcessor::cleanArray($outcomes->getSummary('activeRules'));
-        $activeSteps = ArrayProcessor::cleanArray($outcomes->getSummary('activeSteps'));
+        $activeSteps = $outcomes->getSummary('activeSteps');
+        $tags = $outcomes->summary['tags'];
+        unset($outcomes->summary['tags']);
         unset($outcomes->summary['activeRules']);
         unset($outcomes->summary['activeSteps']);
 
@@ -107,12 +144,13 @@ class WebConsoleProcessor
                 'user_id' => $this->getCred('user_id'),
                 'violations' => json_encode($this->cleanse($outcomes->getItems())),
                 'summary' => json_encode($this->cleanse($outcomes->summary)),
+                'tags' => json_encode($tags),
                 'active_rules' => json_encode($activeRules),
                 'active_steps' => json_encode($activeSteps),
                 'rules_version' => $this->getRulesVersion(),
                 'severities' => json_encode($severities),
-                'branch' => $this->getBranch(),
-                'commit_hash' => $this->getCommitHash(),
+                'branch' => VersionControlProcessor::getBranch(),
+                'commit_hash' => VersionControlProcessor::getCommitHash(),
                 'run_at' => (new \DateTime())->format('Y-m-d H:i:s'),
             ],
             'headers' => $this->getHeaders()
@@ -142,34 +180,22 @@ class WebConsoleProcessor
         ));
     }
 
-    private function loadCreds()
+    private function loadCreds(string $projectToken = null)
     {
         if (!file_exists($this->tokenFilePath . '/' . $this->tokenFile)) {
             return [];
         }
 
-        $this->creds = json_decode(base64_decode(
-            file_get_contents($this->tokenFilePath . '/' . $this->tokenFile)
-        ), true);
+        $this->projectToken = file_get_contents($this->tokenFilePath . '/' . $this->tokenFile);
 
+        $this->creds = json_decode(base64_decode($this->projectToken), true);
         $this->userToken = $this->creds['user_token'] ?? null;
-    }
-
-    private function getBranch(): string
-    {
-        return 'fakemain';
-    }
-
-    private function getCommitHash(): string
-    {
-        return 'fakehash';
     }
 
     private function cleanse(array $data): array
     {
         // Strip out path until project directory name.
-        $cwd = getcwd();
-        $projectPath = dirname($cwd);
+        $projectPath = getcwd();
 
         return json_decode(str_replace(
             [$projectPath, str_replace('/', '\\/', $projectPath)],
@@ -208,7 +234,7 @@ class WebConsoleProcessor
         $data = json_decode($response->getBody()->getContents(), true);
 
         if ($data['success'] !== true) {
-            throw new Exception("API call [$callId] failed, error: " . $data['message']);
+            throw new Exception("API call [$callId] failed, error: " . $data['message'] ?? null);
         }
 
         return $data['data'];

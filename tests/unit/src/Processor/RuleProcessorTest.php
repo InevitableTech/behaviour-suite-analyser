@@ -21,6 +21,7 @@ final class RuleProcessorTest extends TestCase
         $contentObject->background = '';
         $contentObject->filePath = '/a/file/path';
         $contentObject->scenarios = [];
+        $contentObject->feature = $this->createMock(Entities\Feature::class);
         $collection = $this->createMock(Entities\OutcomeCollection::class);
 
         $result = $this->testObject->applyRules($contentObject, $collection);
@@ -42,6 +43,8 @@ final class RuleProcessorTest extends TestCase
         $contentObject->scenarios = [
             $scenario
         ];
+        $contentObject->feature = $this->createMock(Entities\Feature::class);
+
         $collection = $this->createMock(Entities\OutcomeCollection::class);
         $collection->expects($this->exactly(1))
             ->method('addSummary')
@@ -80,6 +83,7 @@ final class RuleProcessorTest extends TestCase
         $contentObject->scenarios = [
             $scenario
         ];
+        $contentObject->feature = $this->createMock(Entities\Feature::class);
         $collection = $this->createMock(Entities\OutcomeCollection::class);
         $collection->expects($this->exactly(4))
             ->method('addSummary')
@@ -119,6 +123,7 @@ final class RuleProcessorTest extends TestCase
         $contentObject->scenarios = [
             $scenario
         ];
+        $contentObject->feature = $this->createMock(Entities\Feature::class);
         $collection = $this->createMock(Entities\OutcomeCollection::class);
         $collection->expects($this->exactly(5))
             ->method('addSummary')
