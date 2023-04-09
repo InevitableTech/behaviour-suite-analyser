@@ -81,12 +81,15 @@ class Scan extends Command
                 $output->writeln(print_r($fileContents, true), OutputInterface::VERBOSITY_DEBUG);
 
                 try {
+                    $outcomeCollection->summary['linesCount'][$file] = count($fileContents->raw);
                     $rulesProcessor->applyRules($fileContents, $outcomeCollection);
                 } catch (Exception $e) {
                     self::error($output, sprintf(''), $e);
                     continue;
                 }
             }
+
+            Processor\SummaryProcessor::setSummary($outcomeCollection);
 
             $output->writeln(print_r($outcomeCollection, true), OutputInterface::VERBOSITY_DEBUG);
 
@@ -96,11 +99,18 @@ class Scan extends Command
 
             // Send the report off.
             if ($config->get('web_console_report')) {
-                $webConsole = new Processor\WebConsoleProcessor($config->get('api_key'), new Client());
+                $webConsole = new Processor\WebConsoleProcessor(
+                    $config->get('api_key', ''),
+                    new Client()
+                );
                 $analysisId = $webConsole->sendAnalysis(
                     clone $outcomeCollection,
                     $severities
                 );
+
+                if (! $analysisId) {
+                    throw new Exception("Unable to create analysis.");
+                }
 
                 $webConsole->printConsoleLink($output, $webConsole->getCred('project_id'), $analysisId);
             }
@@ -130,7 +140,7 @@ class Scan extends Command
             $reportPath = $htmlReportProcessor->generate(
                 $config->getPath('html_report_path'),
                 $severities,
-                $outcomeCollection
+                clone $outcomeCollection
             );
         }
 
@@ -140,7 +150,7 @@ class Scan extends Command
             $jsonReportProcessor->generate(
                 $config->getPath('json_report_path'),
                 $severities,
-                $outcomeCollection
+                clone $outcomeCollection
             );
         }
 
