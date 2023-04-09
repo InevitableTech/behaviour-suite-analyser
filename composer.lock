@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "forceedge01/bdd-analyser-rules",
-            "version": "1.2.0",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/InevitableTech/behaviour-suite-analyser-rules.git",
-                "reference": "855aaeb359ff1fdf5fb70eea8159c41f4b44987b"
+                "reference": "ce9be18f78127b9f62aade40cd222bbc1461f6ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/InevitableTech/behaviour-suite-analyser-rules/zipball/855aaeb359ff1fdf5fb70eea8159c41f4b44987b",
-                "reference": "855aaeb359ff1fdf5fb70eea8159c41f4b44987b",
+                "url": "https://api.github.com/repos/InevitableTech/behaviour-suite-analyser-rules/zipball/ce9be18f78127b9f62aade40cd222bbc1461f6ea",
+                "reference": "ce9be18f78127b9f62aade40cd222bbc1461f6ea",
                 "shasum": ""
             },
             "require": {
@@ -58,9 +58,9 @@
             ],
             "support": {
                 "issues": "https://github.com/InevitableTech/behaviour-suite-analyser-rules/issues",
-                "source": "https://github.com/InevitableTech/behaviour-suite-analyser-rules/tree/1.2.0"
+                "source": "https://github.com/InevitableTech/behaviour-suite-analyser-rules/tree/1.3.0"
             },
-            "time": "2023-03-16T21:05:17+00:00"
+            "time": "2023-04-09T18:47:02+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

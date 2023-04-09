@@ -1,40 +1,40 @@
 install:
-	docker-compose run php-test sh -c "composer install"
-	docker-compose run php-test sh -c "cd testproject && composer install"
-	docker-compose run php-test sh -c "cd vendor/forceedge01/bdd-analyser-rules && composer install"
+	docker-compose run php-7.1-test sh -c "composer install"
+	docker-compose run php-7.1-test sh -c "cd testproject && composer install"
+	docker-compose run php-7.1-test sh -c "cd vendor/forceedge01/bdd-analyser-rules && composer install"
 
 install-dev:
-	docker-compose run php-test sh -c "composer install --prefer-source"
-	docker-compose run php-test sh -c "cd testproject && composer install --prefer-source"
-	docker-compose run php-test sh -c "cd vendor/forceedge01/bdd-analyser-rules && composer install --prefer-source"
+	docker-compose run php-7.1-test sh -c "composer install --prefer-source"
+	docker-compose run php-7.1-test sh -c "cd testproject && composer install --prefer-source"
+	docker-compose run php-7.1-test sh -c "cd vendor/forceedge01/bdd-analyser-rules && composer install --prefer-source"
 
 clean:
-	docker-compose run php-test sh -c "rm -rf composer.lock"
-	docker-compose run php-test sh -c "rm -rf vendor"
-	docker-compose run php-test sh -c "rm -rf testproject/vendor"
+	docker-compose run php-7.1-test sh -c "rm -rf composer.lock"
+	docker-compose run php-7.1-test sh -c "rm -rf vendor"
+	docker-compose run php-7.1-test sh -c "rm -rf testproject/vendor"
 
 global-install:
-	docker-compose run php-test sh -c "php -v && composer global require forceedge01/bdd-analyser"
+	docker-compose run php-7.1-test sh -c "php -v && composer global require forceedge01/bdd-analyser"
 
 command:
-	docker-compose run php-test sh -c "$(command)"
+	docker-compose run php-7.1-test sh -c "$(command)"
 
 update:
-	docker-compose run php-test sh -c "composer update"
+	docker-compose run php-7.1-test sh -c "composer update"
 
 require:
-	docker-compose run php-test sh -c "composer require $(r)"
+	docker-compose run php-7.1-test sh -c "composer require $(r)"
 
 .PHONY: tests
 tests:
-	docker-compose run php-test sh -c "php -v && ./vendor/bin/phpunit tests"
-	docker-compose run php-test sh -c "bin/bdd-analyser scan testproject/features --config=bdd-analyser-config-dev.yaml"
+	docker-compose run php-7.1-test sh -c "php -v && ./vendor/bin/phpunit tests"
+	docker-compose run php-7.1-test sh -c "bin/bdd-analyser scan testproject/features --config=bdd-analyser-config-dev.yaml"
 
 tests-deps:
-	docker-compose run php-test sh -c "php -v && cd ./vendor/forceedge01/bdd-analyser-rules && ./vendor/bin/phpunit tests"
+	docker-compose run php-7.1-test sh -c "php -v && cd ./vendor/forceedge01/bdd-analyser-rules && ./vendor/bin/phpunit tests"
 
 run:
-	docker-compose run php-test sh -c "cd testproject && vendor/bin/bdd-analyser scan features"
+	docker-compose run php-7.1-test sh -c "cd testproject && vendor/bin/bdd-analyser scan features"
 
 run-local:
 	./bin/bdd-analyser scan testproject/features --config=bdd-analyser-config-dev.yaml

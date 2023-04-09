@@ -132,7 +132,9 @@ class WebConsoleProcessor
         array $severities
     ): ?int {
         $activeRules = ArrayProcessor::cleanArray($outcomes->getSummary('activeRules'));
-        $activeSteps = ArrayProcessor::cleanArray($outcomes->getSummary('activeSteps'));
+        $activeSteps = $outcomes->getSummary('activeSteps');
+        $tags = $outcomes->summary['tags'];
+        unset($outcomes->summary['tags']);
         unset($outcomes->summary['activeRules']);
         unset($outcomes->summary['activeSteps']);
 
@@ -142,6 +144,7 @@ class WebConsoleProcessor
                 'user_id' => $this->getCred('user_id'),
                 'violations' => json_encode($this->cleanse($outcomes->getItems())),
                 'summary' => json_encode($this->cleanse($outcomes->summary)),
+                'tags' => json_encode($tags),
                 'active_rules' => json_encode($activeRules),
                 'active_steps' => json_encode($activeSteps),
                 'rules_version' => $this->getRulesVersion(),

@@ -29,6 +29,8 @@ class RulesProcessor
         $collection->summary['files']++;
         $collection->summary['activeRules'] = $this->rules;
 
+        $this->oneTimeStats($contentObject, $collection);
+
         foreach ($this->rules as $ruleDetails) {
             try {
                 $ruleClass = $this->getRuleClass($ruleDetails);
@@ -49,6 +51,26 @@ class RulesProcessor
         }
 
         return $collection;
+    }
+
+    private function oneTimeStats(
+        Entities\FeatureFileContents $contentObject,
+        Entities\OutcomeCollection $collection
+    ) {
+        foreach ($contentObject->feature->getTags() as $tag) {
+            $collection->addSummary('tags', $tag, true);
+        }
+
+        foreach ($contentObject->scenarios as $scenario) {
+            foreach ($scenario->getTags() as $tag) {
+                $collection->addSummary('tags', $tag, true);
+            }
+
+            $steps = $scenario->getSteps();
+            foreach ($steps as $index => $step) {
+                $collection->addSummary('activeSteps', $step->getStepDefinition(), true);
+            }
+        }
     }
 
     private function getRuleClass($ruleDetails): string
@@ -90,20 +112,12 @@ class RulesProcessor
         $rule->setFeatureFileContents($contentObject);
         $rule->applyOnFeature($contentObject, $collection);
 
-        foreach ($contentObject->feature->getTags() as $tag) {
-            $collection->addSummary('tags', $tag);
-        }
-
         if ($contentObject->background) {
             $collection->addSummary('backgrounds', $contentObject->filePath . ':' . $contentObject->background->lineNumber);
             $rule->applyOnBackground($contentObject->background, $collection);
         }
 
         foreach ($contentObject->scenarios as $scenario) {
-            foreach ($scenario->getTags() as $tag) {
-                $collection->addSummary('tags', $tag);
-            }
-
             $collection->addSummary('scenarios', $contentObject->filePath . ':' . $scenario->lineNumber);
             $rule->setScenario($scenario);
             $rule->beforeApplyOnScenario($scenario, $collection);
@@ -111,9 +125,7 @@ class RulesProcessor
 
             // Steps
             $steps = $scenario->getSteps();
-
             foreach ($steps as $index => $step) {
-                $collection->addSummary('activeSteps', $step->getStepDefinition());
                 $rule->beforeApplyOnStep($step, $collection);
                 $rule->applyOnStep($step, $collection);
                 $rule->afterApplyOnStep($step, $collection);

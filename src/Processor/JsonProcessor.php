@@ -14,13 +14,16 @@ class JsonProcessor implements ReportProcessorInterface
         Entities\OutcomeCollection $outcomeCollection
     ): string {
         $activeRules = ArrayProcessor::cleanArray($outcomeCollection->getSummary('activeRules'));
-        $activeSteps = ArrayProcessor::cleanArray($outcomeCollection->getSummary('activeSteps'));
+        $activeSteps = $outcomeCollection->getSummary('activeSteps');
+        $tags = $outcomeCollection->summary['tags'];
+        unset($outcomeCollection->summary['tags']);
         unset($outcomeCollection->summary['activeRules']);
         unset($outcomeCollection->summary['activeSteps']);
 
         $output = [
             'severities' => $severities,
             'summary' => $outcomeCollection->summary,
+            'tags' => $tags,
             'active_steps' => $activeSteps,
             'active_rules' => $activeRules,
             'violations' => $outcomeCollection->getItems()
